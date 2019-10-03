@@ -1,28 +1,28 @@
-const axios = require('axios');
+const fetch = require('node-fetch');
+const API_KEY = process.env.API_KEY;
 
-const setup = () => {
+const setup = (req, res, next) => {
 
     const getStockInfo = (stock_symbol) => new Promise((resolve, reject) => {
-        axios.get(`https://cloud.iexapis.com/stable/stock/${stock_symbol}/quote?token=${API_KEY}`)
-            .then(response => resolve(response.data))
+        fetch(`https://cloud.iexapis.com/stable/stock/${stock_symbol}/quote?token=${API_KEY}`)
+            .then(response => response.json())
+            .then(json => resolve(json))
             .catch(() => reject('Failed to get Stock Info'));
     });
 
-    const setEventStreamHeader = (req, res, next) => {
+    const setEventStreamHeader = (req, res) => {
         res.status(200).set({
             'connection': 'keep-alive',
             'cache-control': 'no-cache',
             'content-type': 'text/event-stream'
         });
-        next();
     };
 
-    const setStocks = (req, res, next) => {
+    const setStocks = (req, res) => {
         req.stocks = [ 'FDS', 'GOOG', 'MSFT', 'AAPL', 'UBER' ];
-        next();
     };
     
-    const sendResponse = (req, res, next) => {
+    const sendResponse = (req, res) => {
         const getInfo = () => Promise.all(req.stocks.map((val) => getStockInfo(val)))
             .then(values => {
                 const StockInfo = values.map(val => {
@@ -41,11 +41,9 @@ const setup = () => {
         getInfo();
     };
 
-    return [
-        setEventStreamHeader,
-        setStocks,
-        sendResponse
-    ];
+    setEventStreamHeader(req, res);
+    setStocks(req, res);
+    sendResponse(req, res);
 };
 
 module.exports = setup;

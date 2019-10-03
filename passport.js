@@ -3,7 +3,7 @@ const LocalStrategy = require('passport-local').Strategy;
 const User = require('./models');
 
 const LoginCallback = (req, username, password, done) => {
-    User.findOne({ email: username })
+    User.findOne(username)
         .then(user => {
             if (!user) return done(null, false);
             console.log(user);
@@ -14,7 +14,7 @@ const LoginCallback = (req, username, password, done) => {
 };
 
 const SignUpCallback = (req, username, password, done) => {
-    User.findOne({ email, username })
+    User.findOne(username)
         .then(user => {
             if (user) return done(null, false);
             //Create account and hash password

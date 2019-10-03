@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import { Stocks } from './components';
 import './App.scss';
 const evtSource = new EventSource('/api/stocks');
-
 
 const App = () => {
     const [Username, setUsername] = useState('');
