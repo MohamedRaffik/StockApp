@@ -3,8 +3,16 @@ const express = require('express');
 const app = express();
 const PORT = process.env.PORT || 5000;
 const api = require('./routes');
+const session = require('express-session');
+const uuid = require('uuid/v4');
+const passport = require('./passport');
 
 app.use(express.json());
+app.use(session({
+    'secret': uuid()
+}));
+app.use(passport.initialize());
+app.use(passport.session());
 app.use('/api', api);
 app.use(express.static(path.join(__dirname, 'client/build')));
 
