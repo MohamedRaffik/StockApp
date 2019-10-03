@@ -2,27 +2,21 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Stocks } from './components';
 import './App.scss';
+const evtSource = new EventSource('/api/stocks');
+
 
 const App = () => {
     const [Username, setUsername] = useState('');
     const [CurrentCash, setCurrentCash] = useState(5000);
     const [StockInfo, setStockInfo] = useState([]);
-    
-    const fetchStockInfo = () => {
-        axios.get('/api/stocks')
-            .then(response => setStockInfo(response.data.data))
-            .catch(err => console.error(err))
-    };
 
+    evtSource.addEventListener('message', (e) => {
+        setStockInfo(JSON.parse(e.data));
+    });
+    
     const Purchase = (stock_symbol, amount) => {
         //send network request to buy
     }
-
-    useEffect(() => {
-        fetchStockInfo();
-        const stockInterval = setInterval(() => fetchStockInfo(), 3000);
-        return () => clearInterval(stockInterval);
-    }, [])
 
     return (
         <div>

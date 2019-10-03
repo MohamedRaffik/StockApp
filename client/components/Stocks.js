@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import './Stock.scss';
-import { isNumber } from 'util';
 
 const Stocks = (props) => {
     const [TickerName, setTickerName] = useState('');

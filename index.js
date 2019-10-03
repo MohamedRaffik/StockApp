@@ -9,7 +9,9 @@ const passport = require('./passport');
 
 app.use(express.json());
 app.use(session({
-    'secret': uuid()
+    'secret': uuid(),
+    'resave': false,
+    'saveUninitialized': false,
 }));
 app.use(passport.initialize());
 app.use(passport.session());
