@@ -1,0 +1,45 @@
+.stock {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    justify-content: center;
+    margin-top: 4em;
+
+    & > div { margin: auto 4em; }
+}
+
+.stock-card {
+    border-bottom: solid thin black;
+    display: flex;
+    flex-direction: column;
+    margin: 0.5em 1em;
+
+    .info {
+        display: flex;
+        flex-direction: row;
+
+        p {
+            margin-right: 2em;
+            &:last-of-type { 
+                margin-left: auto;
+                margin-right: 0; 
+            }
+        }
+    }
+}
+
+.purchase-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    * { margin: 0.4em; }
+
+    input, button { font-size: 1.2em; }
+
+    input { 
+        padding: 0.3em; 
+        border-radius: 5px;
+    }
+}
