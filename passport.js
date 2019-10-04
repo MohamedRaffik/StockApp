@@ -3,9 +3,8 @@ const LocalStrategy = require('passport-local').Strategy;
 const User = require('./models');
 
 const LoginCallback = (req, username, password, done) => {
-    User.findOne(username)
+    User.get(username)
         .then(user => {
-            console.log(req.body);
             if (!user) return done(null, false);
             //check password
             return done(null, user);
@@ -14,9 +13,8 @@ const LoginCallback = (req, username, password, done) => {
 };
 
 const SignUpCallback = (req, username, password, done) => {
-    User.findOne(username)
+    User.get(username)
         .then(user => {
-            console.log(req.body);
             if (user) return done(null, false);
             //Create account and hash password
             return done(null, user);
@@ -25,7 +23,8 @@ const SignUpCallback = (req, username, password, done) => {
 }
 
 const StrategyOptions = {
-    usernameField: 'email',
+    usernameField: 'username',
+    passwordField: 'password',
     passReqToCallback: true
 };
 
@@ -33,11 +32,11 @@ passport.use('local-login', new LocalStrategy(StrategyOptions, LoginCallback));
 passport.use('local-register', new LocalStrategy(StrategyOptions, SignUpCallback));
 
 passport.serializeUser((user, done) => {
-    done(null, user.email);
+    done(null, user.username);
 });
 
 passport.deserializeUser((id, done) => {
-    User.findOne(id)
+    User.get(id)
         .then(user => { done(null, user); })
         .catch(err => { done(err, null); })
 });
