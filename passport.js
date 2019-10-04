@@ -5,8 +5,8 @@ const User = require('./models');
 const LoginCallback = (req, username, password, done) => {
     User.findOne(username)
         .then(user => {
+            console.log(req.body);
             if (!user) return done(null, false);
-            console.log(user);
             //check password
             return done(null, user);
         })
@@ -16,6 +16,7 @@ const LoginCallback = (req, username, password, done) => {
 const SignUpCallback = (req, username, password, done) => {
     User.findOne(username)
         .then(user => {
+            console.log(req.body);
             if (user) return done(null, false);
             //Create account and hash password
             return done(null, user);
@@ -29,16 +30,16 @@ const StrategyOptions = {
 };
 
 passport.use('local-login', new LocalStrategy(StrategyOptions, LoginCallback));
-passport.use('local-signup', new LocalStrategy(StrategyOptions, SignUpCallback));
+passport.use('local-register', new LocalStrategy(StrategyOptions, SignUpCallback));
 
 passport.serializeUser((user, done) => {
     done(null, user.email);
 });
 
 passport.deserializeUser((id, done) => {
-    User.findOne({ email: id }, (err, user) => {
-        done(err, user);
-    });
+    User.findOne(id)
+        .then(user => { done(null, user); })
+        .catch(err => { done(err, null); })
 });
 
 module.exports = passport;

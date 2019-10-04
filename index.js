@@ -15,7 +15,7 @@ app.use(session({
 }));
 app.use(passport.initialize());
 app.use(passport.session());
-app.use('/api', api);
+app.use('/api', api(passport));
 app.use(express.static(path.join(__dirname, 'client/build')));
 
 app.get('*', (req, res) => {

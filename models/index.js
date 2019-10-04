@@ -8,13 +8,13 @@ const createDB = async () => {
         return await client.db('local')
     } 
 
-    return db = await new Firestore({
+    return await new Firestore({
         projectId: 'stockapp-254822',
         keyFilename: '../google-credentials.json'
     });
 }
 
-db = createDB();
+const db = createDB();
 
 class User {
     constructor(username, hash, transactions, portfolio) {
@@ -30,4 +30,4 @@ class User {
     } 
 }
 
-export default User;
+module.exports = User;
