@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { Stocks } from './components';
+import React, { useState } from 'react';
+import { Route, Link, Switch } from 'react-router-dom';
+import { Stocks, Auth } from './components';
 import './App.scss';
 const evtSource = new EventSource('/api/stocks');
 
@@ -16,17 +17,38 @@ const App = () => {
         //send network request to buy
     }
 
+    const StocksProps = {
+        isLoggedIn: Username ? true : false,
+        StockInfo,
+        CurrentCash,
+        PurchaseAction: Purchase
+    };
+
+    const AuthProps = {
+        isLoggedIn: Username ? true : false,
+    };
+
     return (
         <div>
             <nav>
-                <a className="title">Stock App</a>
+                <Link to="/" className="title">Stock App</Link>
                 <a>Portfolio</a>
                 <a>Transactions</a>
-                { Username ? <a>{Username}</a> : <a>Sign in / Register</a> }
+                { Username ? 
+                    <div>
+                        <a>{Username}</a>
+                        <a>Logout</a>
+                    </div> 
+                    : 
+                    <Link to='/auth'>Login / Register</Link> 
+                }
             </nav>
-            <Stocks StockInfo={StockInfo} CurrentCash={CurrentCash} PurchaseAction={Purchase}/>
+            <Switch>
+                {/* <Route path="/" exact render={() => <Stocks {...StocksProps} />} /> */}
+                <Route path="/" exact render={() => <Auth {...AuthProps} />} />
+            </Switch>   
         </div>
-    )
+    );
 };
 
 export default App;

@@ -35,7 +35,7 @@ const setup = (req, res, next) => {
                     }
                 });
                 res.write(`data: ${JSON.stringify(StockInfo)}\n\n`);
-                setTimeout(getInfo, 5000);
+                setTimeout(getInfo, 7000);
             })
             .catch(reason => { console.error(reason); });
         getInfo();

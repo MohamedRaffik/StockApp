@@ -4,6 +4,6 @@ Checklist
 - [ ] Set up register Login page
 - [x] Create login / register routes and controllers
 - [ ] Dont show purchase from when not logged in
-- [ ] User model will need to pass to certain controllers
+- [x] User model will need to pass to certain controllers
 - [ ] Set up transaction endpoint
 - [ ] Set up portfolio endpoint
