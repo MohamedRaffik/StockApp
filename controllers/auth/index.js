@@ -1,6 +1,6 @@
-module.exports = (passport) => {
+module.exports = (context) => {
     return {
-        login: require('./login')(passport),
-        register: require('./register')(passport)
+        login: require('./login')(context),
+        register: require('./register')(context)
     };
 };

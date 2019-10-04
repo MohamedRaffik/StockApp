@@ -1,6 +1,6 @@
-module.exports = (passport) => {
+module.exports = (context) => {
     return {
         stocks: require('./stocks'), 
-        auth: require('./auth')(passport)
+        auth: require('./auth')(context)
     }
 };

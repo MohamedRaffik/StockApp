@@ -1,7 +1,7 @@
 const Router = require('express').Router();
 
-module.exports = (passport) => {
-    const { stocks } = require('../controllers')(passport);
+module.exports = (context) => {
+    const { stocks } = require('../controllers')(context);
 
     Router.get('/', stocks.update);
     return Router;

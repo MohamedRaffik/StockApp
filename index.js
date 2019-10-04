@@ -6,6 +6,12 @@ const api = require('./routes');
 const session = require('express-session');
 const uuid = require('uuid/v4');
 const passport = require('./passport');
+const User = require('./models');
+
+const context = {
+    User,
+    passport
+};
 
 app.use(express.json());
 app.use(session({
@@ -15,7 +21,7 @@ app.use(session({
 }));
 app.use(passport.initialize());
 app.use(passport.session());
-app.use('/api', api(passport));
+app.use('/api', api(context));
 app.use(express.static(path.join(__dirname, 'client/build')));
 
 app.get('*', (req, res) => {

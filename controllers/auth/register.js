@@ -1,5 +1,6 @@
 
-const setup = (passport) => {
+const setup = (context) => {
+    const { passport } = context; 
 
     const checkSuccess = (req, res, next) => {
         console.log(req.user);
