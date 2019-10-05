@@ -22,10 +22,10 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 app.use('/api', api(context));
-app.use(express.static(path.join(__dirname, 'client/build')));
+app.use(express.static(path.join(__dirname, 'client/dist')));
 
 app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'client/public/index.html'));
+    res.sendFile(path.join(__dirname, 'client/dist/index.html'));
 });
 
 app.listen(PORT, () => {

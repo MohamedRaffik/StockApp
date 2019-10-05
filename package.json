@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "concurrently \"nodemon -r dotenv/config index.js\" \"npm run client\"",
     "client": "webpack-dev-server --hot --open --mode development",
-    "server": "node index.js",
+    "server": "node -r dotenv/config index.js",
+    "build": "webpack --mode production",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",

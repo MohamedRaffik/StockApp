@@ -3,11 +3,19 @@ const API_KEY = process.env.API_KEY;
 
 const setup = (req, res, next) => {
 
+    /**
+     * Retrieves stock information for a particular stock name
+     * @param {String} stock_symbol 
+     * @returns {Promise} Stock Information or error
+     */
     const getStockInfo = (stock_symbol) => new Promise((resolve, reject) => {
         fetch(`https://cloud.iexapis.com/stable/stock/${stock_symbol}/quote?token=${API_KEY}`)
             .then(response => response.json())
             .then(json => resolve(json))
-            .catch(() => reject('Failed to get Stock Info'));
+            .catch((err) => {
+                console.error(err);
+                reject('Failed to get Stock Info')
+            });
     });
 
     const setEventStreamHeader = (req, res) => {
@@ -35,7 +43,7 @@ const setup = (req, res, next) => {
                     }
                 });
                 res.write(`data: ${JSON.stringify(StockInfo)}\n\n`);
-                setTimeout(getInfo, 7000);
+                setTimeout(getInfo, 5000);
             })
             .catch(reason => { console.error(reason); });
         getInfo();

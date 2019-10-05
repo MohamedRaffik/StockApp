@@ -5,7 +5,20 @@ const db = new Firestore({
     keyFilename:'google-credentials.json'
 });
 
+/**
+ * User Class for interacting with the database
+ */
 class User {
+    /**
+     * Create a user object
+     * @param {Object} data - Information about the user
+     * @param {String} data.name - Name of the user
+     * @param {String} data.name - Email of the user
+     * @param {String} data.hash - Hash of the password of the user
+     * @param {Array} [data.transactions=[]] - Transactions of the user
+     * @param {Object} [data.portfolio={}] - Portfolio of the user
+     * @param {Number} [data.cash=5000] - Current cash of the user 
+     */
     constructor(data) {
         this.data = data;
         const FieldError = (field) => new Error(`User class instantied without ${field} field`);
@@ -17,6 +30,11 @@ class User {
         if (data.cash === undefined) this.data.cash = 5000; 
     }
 
+    /**
+     * Adds a new transaction the the user
+     * @param {Array} transactions
+     * @returns {Boolean} Success
+     */
     async addTransactions(transactions) {
         try {
             this.data.transactions.concat(transactions);
@@ -33,6 +51,10 @@ class User {
     async addAssets(asset) {
     }
 
+    /**
+     * Inserts this user instance in the database if it does not exist
+     * @returns {Boolean} Success
+     */
     async insert() {
         try {
             const exists = await User.get(this.data.email);
@@ -40,19 +62,24 @@ class User {
             await db.collection('Users').doc(this.data.email).set({...this.data});
             return true;
         } catch (e) {
-            console.log(e);
+            console.error(e);
             return false;
         }
     }
 
+    /**
+     * Retrieves a User instance from the database
+     * @param {String} email 
+     * @returns {Boolean|User} False if the user was not found else the User instance
+     */
     static async get(email) {
         try {
             const user = await db.collection('Users').doc(email).get();
             if (user.exists) return new User(user.data());
-            throw Error('User not found');
+            return false;
 
         } catch (e) { 
-            console.log(e);
+            console.error(e);
             return false; 
         } 
     }
