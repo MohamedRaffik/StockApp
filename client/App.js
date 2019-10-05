@@ -24,16 +24,17 @@ const App = () => {
                 setUsername(json.username);
                 window.location = '/';
             })
-            .catch(err => callback('Unable to login'));
+            .catch(err => {
+                console.error(err);
+                callback('Unable to login');
+            });
     };
 
     useEffect(() => {
         fetch('/api/auth/login', { method: 'POST' })
             .then(response => response.json())
             .then(json => {
-                if (json.username) {
-                    setUsername(json.username);
-                }
+                if (json.username) setUsername(json.username);
             })
             .catch(err => console.error(err));
     }, []);
@@ -67,7 +68,7 @@ const App = () => {
                 { Username ? 
                     <div>
                         <a>{Username}</a>
-                        <a>Logout</a>
+                        <a style={{cursor: 'pointer'}}>Logout</a>
                     </div> 
                     : 
                     <Link to='/auth'>Login / Register</Link> 

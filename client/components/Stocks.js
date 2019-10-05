@@ -31,7 +31,7 @@ const Stocks = (props) => {
 
     const PurchaseForm = () => {
         return (
-            <div>
+            <div className="purchase-form">
                 <h2>Total Cash: ${CurrentCash}</h2>
                 <p style={{color: 'red'}}>{ErrorMsg}</p>
                 <input placeholder="Ticker" onChange={(e) => setTickerName(e.target.value)} />

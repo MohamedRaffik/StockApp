@@ -24,15 +24,15 @@ const Auth = (props) => {
                     <h3>Register</h3>
                     <div>
                         <p>Name</p>
-                        <input onChange={(e) => setRegisterInfo({...RegisterInfo, name: e.target.value})} />
+                        <input onChange={(e) => setRegisterInfo({...RegisterInfo, name: e.target.value})} value={RegisterInfo.name} />
                     </div>
                     <div>
                         <p>Email</p>
-                        <input type="email" onChange={(e) => setRegisterInfo({...RegisterInfo, email: e.target.value})} />
+                        <input type="email" onChange={(e) => setRegisterInfo({...RegisterInfo, email: e.target.value})} value={RegisterInfo.email} />
                     </div>
                     <div>
                         <p>Password</p>
-                        <input type="password" onChange={(e) => setRegisterInfo({...RegisterInfo, password: e.target.value})} />
+                        <input type="password" onChange={(e) => setRegisterInfo({...RegisterInfo, password: e.target.value})} value={RegisterInfo.password} />
                     </div>
                     <button onClick={() => AuthInAction(true)}>Register</button>
                 </div>
@@ -41,11 +41,11 @@ const Auth = (props) => {
                     <h3>Login</h3>
                     <div>
                         <p>Email</p>
-                        <input type="email" onChange={(e) => setLoginInfo({...LoginInfo, email: e.target.value})} />
+                        <input type="email" onChange={(e) => setLoginInfo({...LoginInfo, email: e.target.value})} value={LoginInfo.email} />
                     </div>
                     <div>
                         <p>Password</p>
-                        <input type="password" onChange={(e) => setLoginInfo({...LoginInfo, password: e.target.value})} />
+                        <input type="password" onChange={(e) => setLoginInfo({...LoginInfo, password: e.target.value})} value={LoginInfo.password} />
                     </div>
                     <button onClick={() => AuthInAction(false)}>Login</button>
                 </div>
