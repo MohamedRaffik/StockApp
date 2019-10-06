@@ -5,7 +5,10 @@ const setup = (context) => {
     const { passport } = context;
 
     const checkIfLoggedIn = (req, res, next) => {
-        if (req.user) return res.json({username: req.user.data.email, name: req.user.data.name});
+        if (req.user) {
+            const { email, name, cash } = req.user.data;
+            return res.json({username: email, name});
+        }
         next();
     }
 
@@ -19,7 +22,8 @@ const setup = (context) => {
         if (err) return res.json({error: err})
         req.login(user, err => {
             if (err) return res.json({error: 'Unable to login'})
-            return res.json({username: user.data.email, name: user.data.name});
+            const { email, name, cash } = req.user.data;
+            return res.json({username: email, name});        
         });
     })(req, res, next);
 

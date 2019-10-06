@@ -6,7 +6,7 @@ const Auth = (props) => {
     const [LoginInfo, setLoginInfo] = useState({ email: '', password: '' });
     const [ErrorMsg, setErrorMsg] = useState('');
 
-    const { isLoggedIn, AuthIn } = props;
+    const { AuthIn } = props;
 
     const AuthInAction = (register) => {
         setErrorMsg('');

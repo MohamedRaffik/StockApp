@@ -15,7 +15,7 @@ const context = {
 
 app.use(express.json());
 app.use(session({
-    'secret': uuid(),
+    'secret': 'fordev',
     'resave': false,
     'saveUninitialized': false,
 }));

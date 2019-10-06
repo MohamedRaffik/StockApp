@@ -1,26 +1,43 @@
-const fetch = require('node-fetch');
-const { isAuthenticated } = require('../utils');
-const API_KEY = process.env.API_KEY;
+const { isAuthenticated, getStockInfo } = require('../utils');
 
 const setup = (context) => {
     const { User } = context;
 
-    const listTransactions = (req, res, next) => {
-        const user = User(req.user.data);
-        const { stock_symbol, shares } = req.body;
-        fetch(`https://cloud.iexapis.com/stable/stock/${stock_symbol}/quote?token=${API_KEY}`)
-                .then(response => response.json())
-                .then(json => {
-                    user.addTransaction(json['symbol'], Number(json['latestPrice']).toFixed(2), shares)
-                        .then(success => {
-                            if (success) return res.json({currentCash: user.data.cash})
-                            return res.json({error: 'Unable to complete transactions'})
-                        })
-                        .catch(err => res.json({error: 'Unable to complete transactions'}));
-                })
-                .catch((err) => {
-                    console.error(err);
-                    reject('Failed to get Stock Info')
-                });
+    const checkValidBody = (req, res, next) => {
+        if (!('symbol' in req.body)) return res.json({error: 'Stock Symbol not indicated'});
+        if (!('shares' in req.body)) return res.json({error: 'Number of shares not indicated'});
+        next();
     }
-}
+
+    const getStockPrice = (req, res, next) => {
+        const { symbol } = req.body;
+        getStockInfo(symbol)
+            .then(info => {
+                req.body.price = Number(info['latestPrice']).toFixed(2);
+                next();
+            })
+            .catch(err => {
+                return res.json({error: err});
+            })
+    };
+
+    const addUserTransaction = (req, res) => {
+        const user = new User(req.user.data);
+        const { symbol, shares, price } = req.body;
+        user.addTransaction(symbol, price, shares)
+            .then(success => {
+                if (!success) return res.json({error: 'Transaction Failed'})
+                return res.json({newCash: user.data.cash});
+            })
+            .catch(err => res.json({error: err}));
+    };
+
+    return [
+        isAuthenticated,
+        checkValidBody,
+        getStockPrice,
+        addUserTransaction
+    ];
+};
+
+module.exports = setup;

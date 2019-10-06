@@ -1,19 +1,43 @@
 import React, { useState, useEffect } from 'react';
 import './Portfolio.scss';
 
-const Stocks = (props) => {
+const Portfolio = (props) => {
+
     const [TickerName, setTickerName] = useState('');
-    const [Quantity, setQuantity] = useState(0);
+    const [Quantity, setQuantity] = useState('');
+    const [PortfolioValue, setPortfolioValue] = useState(0);
+    const [CurrentCash, setCurrentCash] = useState(0);
     const [StockInfo, setStockInfo] = useState([])
     const [ErrorMsg, SetErrorMsg] = useState('');
+
+    const Purchase = () => {
+        fetch('/api/transactions/add', { 
+            method: 'POST',
+            body: JSON.stringify({ symbol: TickerName, shares: Quantity }),
+            headers: { 'Content-Type': 'application/json' }
+        })
+            .then(response => response.json())
+            .then(json => {
+                if (json.error) return SetErrorMsg(json.error);
+                setCurrentCash(json.newCash);
+            })
+            .catch(err => SetErrorMsg('Transaction failed'))
+    };
 
     useEffect(() => {
         const evtSource = new EventSource('/api/portfolio');
         evtSource.addEventListener('message', (e) => {
-            setStockInfo(JSON.parse(e.data));
+            const { stocks, cash } = JSON.parse(e.data);
+            setStockInfo(stocks);
+            setCurrentCash(cash);
         });
         return () => evtSource.close();
     }, []);
+
+    useEffect(() => {
+        const value = StockInfo.reduce((prev, curr, i) => prev + ( curr.current_price * curr.shares ), 0);
+        setPortfolioValue(value);
+    }, [StockInfo]);
 
     const StockCard = (stock) => {
         return (
@@ -24,27 +48,31 @@ const Stocks = (props) => {
                 <div className="info">
                     <p>{stock.symbol}</p>
                     <p>-</p>
-                    <p> shares</p>
-                    <p>&#x40; $ {stock.current_price} per</p>
+                    <p>{stock.shares} shares</p>
+                    <p>$ {stock.current_price * stock.shares}</p>
                 </div>
             </div>
         );
     };
     
     return (
-        <div className="stock">
-            <div>
-                { StockInfo.map(val => StockCard(val)) }
-            </div>
-            <div className="purchase-form">
-                <h2>Total Cash: $5000</h2>
-                <p style={{color: 'red'}}>{ErrorMsg}</p>
-                <input placeholder="Ticker" onChange={(e) => setTickerName(e.target.value)} />
-                <input type="number" placeholder="Quantity" onChange={(e) => setQuantity(Number(e.target.value))} />
-                <button>Purchase</button>
+        <div>
+            <h2 style={{margin: '2em', left: '30%'}}>Portfolio ($ {PortfolioValue})</h2>
+            <div className="stock">
+                <div>
+                    { StockInfo ? StockInfo.map(val => StockCard(val)) : <p>Purchase stocks to add to your portfolio</p> }
+                </div>
+                <div style={{margin: '10px', width: '2px', height: '300px', backgroundColor: 'black'}}></div>
+                <div className="purchase-form">
+                    <h2>Total Cash: ${CurrentCash}</h2>
+                    <p style={{color: 'red'}}>{ErrorMsg}</p>
+                    <input placeholder="Ticker" onChange={(e) => setTickerName(e.target.value)} value={TickerName}/>
+                    <input placeholder="Quantity" onChange={(e) => setQuantity(Number(e.target.value))} value={Quantity} />
+                    <button onClick={Purchase}>Purchase</button>
+                </div>
             </div>
         </div>
     );
 };
 
-export default Stocks;
+export default Portfolio;

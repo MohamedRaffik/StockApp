@@ -26,7 +26,7 @@ class User {
         if (data.email === undefined) throw FieldError('email');
         if (data.hash === undefined) throw FieldError('hash');
         if (data.transactions === undefined) this.data.transactions = [];
-        if (data.portfolio === undefined) this.data.portfolio = [];
+        if (data.portfolio === undefined) this.data.portfolio = {};
         if (data.cash === undefined) this.data.cash = 5000; 
     }
 
@@ -39,18 +39,20 @@ class User {
      */
     async addTransaction(symbol, price, shares) {
         try {
-            this.data.transactions.push(transaction);
+            if (this.data.cash < price * shares) return false;
+            this.data.transactions.push({ symbol, price, shares });
+            this.data.portfolio[symbol] = symbol in this.data.portfolio ? this.data.portfolio[symbol] + shares : shares; 
+            this.data.cash -= price * shares;
             await db.collection('Users').doc(this.data.email).set({
-                transactions: this.data.transactions
+                transactions: this.data.transactions,
+                portfolio: this.data.portfolio,
+                cash: this.data.cash
             }, { merge: true });
             return true;
         } catch (e) {
             console.error(e);
             return false;
         }
-    }
-
-    async addAssets(asset) {
     }
 
     /**
@@ -60,7 +62,7 @@ class User {
     async insert() {
         try {
             const exists = await User.get(this.data.email);
-            if (exists) throw Error('User exists');
+            if (exists) return false;
             await db.collection('Users').doc(this.data.email).set({...this.data});
             return true;
         } catch (e) {

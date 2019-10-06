@@ -1,0 +1,10 @@
+@import './Portfolio.scss';
+
+.transactions {
+    margin: 2em; 
+
+    .transaction-card {
+        @extend .stock-card;
+        margin-bottom: 20px;
+    }
+}

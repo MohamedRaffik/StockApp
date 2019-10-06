@@ -1,7 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { Route, Link, Switch } from 'react-router-dom';
-import { Portfolio, Auth } from './components';
+import { Redirect, Route, Link, Switch } from 'react-router-dom';
+import { Portfolio, Auth, Transactions } from './components';
 import './App.scss';
+
+const UnAuthorizedComponent = (props) => {
+    const { name } = props;
+
+    return (
+        <div className="unauthorized">
+            <h3>
+                <Link to="/">Register</Link> or <Link to="/">Login</Link> to view {name}
+            </h3>
+        </div>
+    );
+};
 
 const App = () => {
     const [Username, setUsername] = useState('');
@@ -39,9 +51,9 @@ const App = () => {
     return (
         <div>
             <nav>
-                <Link to="/" className="title">Stock App</Link>
-                <a>Portfolio</a>
-                <a>Transactions</a>
+                <Link to={Username ? "/portfolio" : "/"} className="title">Stock App</Link>
+                <Link to="/portfolio">Portfolio</Link>
+                <Link to="/transactions">Transactions</Link>
                 { Username ? 
                     <div>
                         <a>{Username}</a>
@@ -52,7 +64,9 @@ const App = () => {
                 }
             </nav>
             <Switch>
-                <Route path="/" exact render={() => Username ? <Portfolio /> : <Auth {...AuthProps} />} />
+                <Route path="/" exact render={() => Username ? <Redirect to="/portfolio" /> : <Auth {...AuthProps} />} />
+                <Route path="/portfolio" exact render={() => Username ? <Portfolio /> : <UnAuthorizedComponent name={'Portfolio'} />} />
+                <Route path="/transactions" exact render={() => Username ? <Transactions /> : <UnAuthorizedComponent name={'Transactions'} />} />
             </Switch>   
         </div>
     );

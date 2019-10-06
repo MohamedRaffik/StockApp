@@ -1,3 +1,6 @@
+const API_KEY = process.env.API_KEY;
+const fetch = require('node-fetch');
+
 module.exports = {
     validateEmail : (email) => {
         var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -5,7 +8,18 @@ module.exports = {
     },
     isAuthenticated: (req, res, next) => {
         if (!req.user) return res.status(401).json({error: 'Unauthorized'});
-        console.log('hi')
         next();
-    }
+    },
+    getStockInfo: (stock_symbol) => new Promise((resolve, reject) => {
+        fetch(`https://cloud.iexapis.com/stable/stock/${stock_symbol}/quote?token=${API_KEY}`)
+            .then(response => {
+                if (response.status === 404) reject('Invalid Symbol'); 
+                return response.json();
+            })
+            .then(json => resolve(json))
+            .catch((err) => {
+                console.error(err);
+                reject('Failed to get Stock Info')
+            });
+    })
 };
