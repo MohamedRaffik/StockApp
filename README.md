@@ -5,10 +5,10 @@ Checklist
 - [x] Create login / register routes and controllers
 - [x] Dont show purchase from when not logged in
 - [x] User model will need to pass to certain controllers
-- [ ] Set up transaction endpoint
-- [ ] Set up portfolio endpoint
-- [ ] Create transaction page
-- [ ] Create portfolio page
+- [x] Set up transaction endpoint
+- [x] Set up portfolio endpoint
+- [x] Create transaction page
+- [x] Create portfolio page
 - [ ] Set up logout endpoint
 - [ ] Test endpoints
 - [ ] Define prop types for components
@@ -17,7 +17,7 @@ User Stories completed
 
 - [x] 1
 - [x] 2
-- [ ] 3
-- [ ] 4
-- [ ] 5
+- [x] 3
+- [x] 4
+- [x] 5
 - [ ] 6
