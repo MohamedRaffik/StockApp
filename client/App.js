@@ -26,7 +26,10 @@ const App = () => {
         })
             .then(response => response.json())
             .then(json => {
-                if (json.error) return callback(json.error);
+                if (json.error) {
+                    callback(json.error);
+                    return;
+                }
                 setUsername(json.username);
             })
             .catch(err => {
@@ -34,6 +37,15 @@ const App = () => {
                 callback('Unable to login');
             });
     };
+
+    const Logout = () => {
+        fetch('/api/auth/logout')
+            .then(response => {
+                setUsername('');
+                window.location = '/';
+            })
+            .catch(err => console.error(err));
+    }
 
     useEffect(() => {
         fetch('/api/auth/login', { method: 'POST' })
@@ -57,7 +69,7 @@ const App = () => {
                 { Username ? 
                     <div>
                         <a>{Username}</a>
-                        <a style={{cursor: 'pointer'}}>Logout</a>
+                        <a style={{cursor: 'pointer'}} onClick={Logout}>Logout</a>
                     </div> 
                     : 
                     null

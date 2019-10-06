@@ -11,7 +11,7 @@ const Auth = (props) => {
     const AuthInAction = (register) => {
         setErrorMsg('');
         if (register) AuthIn(RegisterInfo, true, setErrorMsg);
-        AuthIn(LoginInfo, false, setErrorMsg);
+        else { AuthIn(LoginInfo, false, setErrorMsg); }
         setRegisterInfo({ name: '', email: '', password: '' });
         setLoginInfo({ email: '', password: '' })
     }

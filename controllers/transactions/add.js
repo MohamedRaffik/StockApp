@@ -13,7 +13,7 @@ const setup = (context) => {
         const { symbol } = req.body;
         getStockInfo(symbol)
             .then(info => {
-                req.body.price = Number(info['latestPrice']).toFixed(2);
+                req.body.price = Number(info['latestPrice']);
                 next();
             })
             .catch(err => {
@@ -22,13 +22,10 @@ const setup = (context) => {
     };
 
     const addUserTransaction = (req, res) => {
-        const user = new User(req.user.data);
+        const user = new User(req.user);
         const { symbol, shares, price } = req.body;
         user.addTransaction(symbol, price, shares)
-            .then(success => {
-                if (!success) return res.json({error: 'Transaction Failed'})
-                return res.json({newCash: user.data.cash});
-            })
+            .then(success => res.json({success: true}))
             .catch(err => res.json({error: err}));
     };
 

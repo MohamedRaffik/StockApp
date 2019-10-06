@@ -19,7 +19,7 @@ const Portfolio = (props) => {
             .then(response => response.json())
             .then(json => {
                 if (json.error) return SetErrorMsg(json.error);
-                setCurrentCash(json.newCash);
+                document.location.reload();
             })
             .catch(err => SetErrorMsg('Transaction failed'))
     };
@@ -36,10 +36,13 @@ const Portfolio = (props) => {
 
     useEffect(() => {
         const value = StockInfo.reduce((prev, curr, i) => prev + ( curr.current_price * curr.shares ), 0);
-        setPortfolioValue(value);
+        setPortfolioValue(Number(value).toFixed(2));
     }, [StockInfo]);
 
     const StockCard = (stock) => {
+        let color = stock.current_price > stock.open_price ? 'green' : 'red';
+        if (stock.current_price === stock.open_price) color = 'grey'; 
+
         return (
             <div className="stock-card" key={stock.symbol}>
                 <div>   
@@ -49,7 +52,7 @@ const Portfolio = (props) => {
                     <p>{stock.symbol}</p>
                     <p>-</p>
                     <p>{stock.shares} shares</p>
-                    <p>$ {stock.current_price * stock.shares}</p>
+                    <p style={{color}}>$ {stock.current_price * stock.shares}</p>
                 </div>
             </div>
         );
@@ -60,7 +63,7 @@ const Portfolio = (props) => {
             <h2 style={{margin: '2em', left: '30%'}}>Portfolio ($ {PortfolioValue})</h2>
             <div className="stock">
                 <div>
-                    { StockInfo ? StockInfo.map(val => StockCard(val)) : <p>Purchase stocks to add to your portfolio</p> }
+                    { StockInfo.length !== 0 ? StockInfo.map(val => StockCard(val)) : <p>Purchase stocks to add to your portfolio</p> }
                 </div>
                 <div style={{margin: '10px', width: '2px', height: '300px', backgroundColor: 'black'}}></div>
                 <div className="purchase-form">

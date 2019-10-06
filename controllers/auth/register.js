@@ -14,8 +14,8 @@ const setup = (context) => {
     const Register = (req, res, next) => passport.authenticate('local-register', (err, user, info) => {
         if (err) return res.json({error: err})
         req.login(user, err => {
-            if (err) return res.json({error: 'Unable to login after register'})
-            const { email, name, cash } = req.user.data;
+            if (err) return res.json({error: err})
+            const { email, name } = req.user;
             return res.json({username: email, name});
         });
     })(req, res, next);

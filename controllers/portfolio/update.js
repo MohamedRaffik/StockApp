@@ -23,19 +23,19 @@ const setup = (context) => {
         };
         
         const sendResponse = (req, res) => {
-            const stocks = Object.keys(req.user.data.portfolio);
+            const stocks = Object.keys(req.user.portfolio);
             const getInfo = () => Promise.all(stocks.map((val) => getStockInfo(val)))
                 .then(values => {
                     const StockInfo = values.map(val => {
                         return {
                             symbol: val['symbol'],
-                            shares: req.user.data.portfolio[val['symbol']],
+                            shares: req.user.portfolio[val['symbol']],
                             company_name: val['companyName'],
-                            open_price: Number(val['open']).toFixed(2), 
-                            current_price: Number(val['latestPrice']).toFixed(2),
+                            open_price: Number(val['open']), 
+                            current_price: Number(val['latestPrice']),
                         }
                     });
-                    const data = { stocks: StockInfo, cash: req.user.data.cash };
+                    const data = { stocks: StockInfo, cash: req.user.cash };
                     res.write(`data: ${JSON.stringify(data)}\n\n`);
                     setTimeout(getInfo, 5000);
                 })

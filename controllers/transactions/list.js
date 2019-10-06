@@ -3,7 +3,7 @@ const { isAuthenticated } = require('../utils');
 const setup = (context) => {
 
     const listTransactions = (req, res) => {
-        const { transactions } = req.user.data;
+        const { transactions } = req.user;
         return res.json({transactions});
     }
 
