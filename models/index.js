@@ -32,12 +32,14 @@ class User {
 
     /**
      * Adds a new transaction the the user
-     * @param {Array} transactions
+     * @param {String} symbol
+     * @param {Number} price
+     * @param {Number} shares
      * @returns {Boolean} Success
      */
-    async addTransactions(transactions) {
+    async addTransaction(symbol, price, shares) {
         try {
-            this.data.transactions.concat(transactions);
+            this.data.transactions.push(transaction);
             await db.collection('Users').doc(this.data.email).set({
                 transactions: this.data.transactions
             }, { merge: true });
@@ -76,7 +78,7 @@ class User {
         try {
             const user = await db.collection('Users').doc(email).get();
             if (user.exists) return new User(user.data());
-            return false;
+            throw Error('User not found');
 
         } catch (e) { 
             console.error(e);

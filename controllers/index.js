@@ -1,6 +1,6 @@
 module.exports = (context) => {
     return {
-        stocks: require('./stocks'), 
-        auth: require('./auth')(context)
+        portfolio: require('./portfolio')(context), 
+        auth: require('./auth')(context),
     }
 };

@@ -1,9 +1,9 @@
 const Router = require('express').Router();
-const Stocks = require('./stocks');
+const Portfolio = require('./portfolio');
 const Auth = require('./auth');
 
 module.exports = (context) => {
-    Router.use('/stocks', Stocks(context));
+    Router.use('/portfolio', Portfolio(context));
     Router.use('/auth', Auth(context));    
     return Router;
 }

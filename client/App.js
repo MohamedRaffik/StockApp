@@ -1,16 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Route, Link, Switch } from 'react-router-dom';
-import { Stocks, Auth, PrivateRoute } from './components';
+import { Portfolio, Auth } from './components';
 import './App.scss';
 
 const App = () => {
     const [Username, setUsername] = useState('');
-    const [CurrentCash, setCurrentCash] = useState(5000);
-    const [StockInfo, setStockInfo] = useState([]);
-    
-    const Purchase = (stock_symbol, amount, callback) => {
-        //send network request to buy
-    }
 
     const AuthIn = (info, register, callback) => {
         fetch(`/api/auth/${register ? 'register': 'login'}`, {
@@ -22,7 +16,6 @@ const App = () => {
             .then(json => {
                 if (json.error) return callback(json.error);
                 setUsername(json.username);
-                window.location = '/';
             })
             .catch(err => {
                 console.error(err);
@@ -39,23 +32,7 @@ const App = () => {
             .catch(err => console.error(err));
     }, []);
 
-    useEffect(() => {
-        const evtSource = new EventSource('/api/stocks');
-        evtSource.addEventListener('message', (e) => {
-            setStockInfo(JSON.parse(e.data));
-        });
-        return () => evtSource.close();
-    }, []);
-
-    const StocksProps = {
-        isLoggedIn: Username ? true : false,
-        StockInfo,
-        CurrentCash,
-        PurchaseAction: Purchase
-    };
-
     const AuthProps = {
-        isLoggedIn: Username ? true : false,
         AuthIn
     };
 
@@ -71,12 +48,11 @@ const App = () => {
                         <a style={{cursor: 'pointer'}}>Logout</a>
                     </div> 
                     : 
-                    <Link to='/auth'>Login / Register</Link> 
+                    null
                 }
             </nav>
             <Switch>
-                <Route path="/" exact render={() => <Stocks {...StocksProps} />} />
-                <PrivateRoute path="/auth" isAuthenticated={Username} Component={Auth} childProps={AuthProps} />
+                <Route path="/" exact render={() => Username ? <Portfolio /> : <Auth {...AuthProps} />} />
             </Switch>   
         </div>
     );

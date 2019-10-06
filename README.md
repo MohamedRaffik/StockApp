@@ -1,6 +1,6 @@
 Checklist
 - [x] Remove axios
-- [x] Set up mongodb driver and google firestore models (not using mongdb driver)
+- [x] Set up google firestore models
 - [x] Set up register Login page
 - [x] Create login / register routes and controllers
 - [x] Dont show purchase from when not logged in
@@ -12,3 +12,12 @@ Checklist
 - [ ] Set up logout endpoint
 - [ ] Test endpoints
 - [ ] Define prop types for components
+
+User Stories completed
+
+- [x] 1
+- [x] 2
+- [ ] 3
+- [ ] 4
+- [ ] 5
+- [ ] 6
