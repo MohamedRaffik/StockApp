@@ -9,6 +9,8 @@ Checklist
 - [x] Set up portfolio endpoint
 - [x] Create transaction page
 - [x] Create portfolio page
+- [ ] Rewrite user class methods as promises without async await
+- [ ] Rewrite passport functions as ^^^^
 - [ ] Set up logout endpoint
 - [ ] Test endpoints
 - [ ] Define prop types for components
