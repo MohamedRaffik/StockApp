@@ -26,12 +26,12 @@ const Portfolio = (props) => {
 
     useEffect(() => {
         const evtSource = new EventSource('/api/portfolio');
-        evtSource.addEventListener('message', (e) => {
+        evtSource.addEventListener('message', e => {
             const { stocks, cash } = JSON.parse(e.data);
             setStockInfo(stocks);
-            setCurrentCash(cash);
+            setCurrentCash(Number(cash).toFixed(2));
         });
-        return () => evtSource.close();
+        evtSource.addEventListener('error', e => SetErrorMsg('Connection to receive Portfolio data was terminated'));
     }, []);
 
     useEffect(() => {
@@ -52,7 +52,7 @@ const Portfolio = (props) => {
                     <p>{stock.symbol}</p>
                     <p>-</p>
                     <p>{stock.shares} shares</p>
-                    <p style={{color}}>$ {stock.current_price * stock.shares}</p>
+                    <p style={{color}}>$ {Number(stock.current_price * stock.shares).toFixed(2)}</p>
                 </div>
             </div>
         );
@@ -60,7 +60,7 @@ const Portfolio = (props) => {
     
     return (
         <div>
-            <h2 style={{margin: '2em', left: '30%'}}>Portfolio ($ {PortfolioValue})</h2>
+            <h2 style={{margin: '2em', left: '30%'}}>Portfolio ($ {Number(PortfolioValue).toFixed(2)})</h2>
             <div className="stock">
                 <div>
                     { StockInfo.length !== 0 ? StockInfo.map(val => StockCard(val)) : <p>Purchase stocks to add to your portfolio</p> }

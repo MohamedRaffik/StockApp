@@ -8,16 +8,16 @@ const LoginCallback = (req, username, password, done) => {
     User.get(username)
         .then(user => {
             const equal = bcrypt.compareSync(password, user.hash);
-            if (!equal) return done('Invalid Credentials');
+            if (!equal) return done('Invalid Credentials', false);
             return done(null, user);
         })
         .catch(err => done(err, false));
 };
 
 const SignUpCallback = (req, username, password, done) => {
-    const { name, email } = req.body;
+    const { name } = req.body;
     const hash = bcrypt.hashSync(password, 10);
-    const user = new User({ name, email, hash });
+    const user = new User({ name, email: username, hash });
     user.insert()
         .then(user => done(null, user))
         .catch(err => done(err, false));

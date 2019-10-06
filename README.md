@@ -10,9 +10,9 @@ Checklist
 - [x] Create transaction page
 - [x] Create portfolio page
 - [ ] Add timestamps to transactions
-- [ ] Rewrite user class methods as promises without async await
-- [ ] Rewrite passport functions as ^^^^
-- [ ] Set up logout endpoint
+- [x] Rewrite user class methods as promises without async await
+- [x] Rewrite passport functions as ^^^^
+- [x] Set up logout endpoint
 - [ ] Deploy to GCP
 - [ ] Test endpoints
 - [ ] Define prop types for components

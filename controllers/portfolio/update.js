@@ -16,9 +16,9 @@ const setup = (context) => {
 
         const setEventStreamHeader = (req, res) => {
             res.status(200).set({
-                'connection': 'keep-alive',
-                'cache-control': 'no-cache',
-                'content-type': 'text/event-stream'
+                'Connection': 'keep-alive',
+                'Cache-Control': 'no-cache',
+                'Content-Type': 'text/event-stream',
             });
         };
         
