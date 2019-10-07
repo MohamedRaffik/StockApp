@@ -12,6 +12,9 @@
   },
   "author": "",
   "license": "ISC",
+  "engines": {
+    "node": "10.x"
+  },
   "dependencies": {
     "@google-cloud/firestore": "^2.3.0",
     "bcrypt": "^3.0.6",
