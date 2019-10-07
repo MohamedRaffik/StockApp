@@ -21,7 +21,10 @@ const setup = (context) => {
     const Login = (req, res, next) => passport.authenticate('local-login', (err, user, info) => {
         if (err) return res.json({error: err})
         req.login(user, err => {
-            if (err) return res.json({error: err})
+            if (err) {
+                console.log(err);
+                return res.json({error: err});
+            }
             const { email, name } = req.user;
             return res.json({username: email, name});        
         });

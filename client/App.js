@@ -23,19 +23,18 @@ const App = () => {
             method: 'POST',
             body: JSON.stringify(info),
             headers: { 'Content-Type': 'application/json' }
+        }).then(response => response.json())
+        .then(json => {
+            if (json.error) {
+                callback(json.error);
+                return;
+            }
+            setUsername(json.username);
         })
-            .then(response => response.json())
-            .then(json => {
-                if (json.error) {
-                    callback(json.error);
-                    return;
-                }
-                setUsername(json.username);
-            })
-            .catch(err => {
-                console.error(err);
-                callback('Unable to login');
-            });
+        .catch(err => {
+            console.error(err);
+            callback('Unable to login');
+        });
     };
 
     const Logout = () => {
@@ -43,8 +42,7 @@ const App = () => {
             .then(response => {
                 setUsername('');
                 window.location = '/';
-            })
-            .catch(err => console.error(err));
+            }).catch(err => console.error(err));
     }
 
     useEffect(() => {
@@ -52,8 +50,7 @@ const App = () => {
             .then(response => response.json())
             .then(json => {
                 if (json.username) setUsername(json.username);
-            })
-            .catch(err => console.error(err));
+            }).catch(err => console.error(err));
     }, []);
 
     const AuthProps = {

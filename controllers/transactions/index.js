@@ -1,6 +1,7 @@
 module.exports = (context) => {
     return {
-        add: require('./add')(context),
-        list: require('./list')(context)
+        purchase: require('./purchase')(context),
+        list: require('./list')(context),
+        sell: require('./sell')(context)
     };
 };

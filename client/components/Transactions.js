@@ -13,11 +13,14 @@ const Transactions = (props) => {
     }, []);
 
     const transactions = UserTransactions.map(val => {
+        const color = val.type === 'purchase' ? 'red' : 'green';
         return (
             <div className="transaction-card" key={val.symbol}>
                 <div className="info">
                     <p>{val.symbol}</p>
-                    <p>{val.shares} shares @ $ {val.price}</p>
+                    <p>{val.shares} shares @ $ 
+                        <span style={{display: 'inline', color}}>{val.price}</span>
+                    </p>
                 </div>
             </div>
         );

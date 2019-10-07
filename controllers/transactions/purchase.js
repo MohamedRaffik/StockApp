@@ -17,23 +17,27 @@ const setup = (context) => {
                 next();
             })
             .catch(err => {
+                console.error(err);
                 return res.json({error: err});
             })
     };
 
-    const addUserTransaction = (req, res) => {
+    const PurchaseTransaction = (req, res) => {
         const user = new User(req.user);
         const { symbol, shares, price } = req.body;
-        user.addTransaction(symbol, price, shares)
+        user.PurchaseStock(symbol, price, shares)
             .then(success => res.json({success: true}))
-            .catch(err => res.json({error: err}));
+            .catch(err => { 
+                console.error(err); 
+                return res.json({error: err})
+            });
     };
 
     return [
         isAuthenticated,
         checkValidBody,
         getStockPrice,
-        addUserTransaction
+        PurchaseTransaction
     ];
 };
 

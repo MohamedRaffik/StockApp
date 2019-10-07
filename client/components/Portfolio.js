@@ -11,17 +11,29 @@ const Portfolio = (props) => {
     const [ErrorMsg, SetErrorMsg] = useState('');
 
     const Purchase = () => {
-        fetch('/api/transactions/add', { 
+        fetch('/api/transactions/purchase', { 
             method: 'POST',
             body: JSON.stringify({ symbol: TickerName, shares: Quantity }),
             headers: { 'Content-Type': 'application/json' }
-        })
-            .then(response => response.json())
-            .then(json => {
-                if (json.error) return SetErrorMsg(json.error);
-                document.location.reload();
-            })
-            .catch(err => SetErrorMsg('Transaction failed'))
+        }).then(response => response.json())
+        .then(json => {
+            console.log(json);
+            if (json.error) return SetErrorMsg(json.error);
+            document.location.reload();
+        }).catch(err => SetErrorMsg('Transaction Failed'))
+    };
+
+    const Sell = () => {
+        fetch('/api/transactions/sell', {
+            method: 'POST',
+            body: JSON.stringify({ symbol: TickerName, shares: Quantity }),
+            headers: { 'Content-Type': 'application/json' }
+        }).then(response => response.json())
+        .then(json => {
+            console.log(json);
+            if (json.error) return SetErrorMsg(json.error);
+            document.location.reload();
+        }).catch(err => SetErrorMsg('Transaction Failed'));
     };
 
     useEffect(() => {
@@ -71,7 +83,10 @@ const Portfolio = (props) => {
                     <p style={{color: 'red'}}>{ErrorMsg}</p>
                     <input placeholder="Ticker" onChange={(e) => setTickerName(e.target.value)} value={TickerName}/>
                     <input placeholder="Quantity" onChange={(e) => setQuantity(Number(e.target.value))} value={Quantity} />
-                    <button onClick={Purchase}>Purchase</button>
+                    <div className="button">
+                        <button onClick={Purchase}>Purchase</button>
+                        <button onClick={Sell}>Sell</button>
+                    </div>
                 </div>
             </div>
         </div>

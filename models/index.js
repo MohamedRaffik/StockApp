@@ -54,16 +54,16 @@ module.exports = {
                 this.cash = cash === undefined ? 5000 : cash;
             }
 
-            addTransaction(symbol, price, shares) {
+            PurchaseStock(symbol, price, shares) {
                 return new Promise((resolve, reject) => {
-                    const purchase_amount = Number(price) * Number(shares);
-                    if (this.cash < purchase_amount) {
+                    const amount = Number(price) * Number(shares);
+                    if (this.cash < amount) {
                         reject('Purchase failed, not enough money');
                         return;
                     }
-                    this.transactions.push({ symbol, price, shares });
+                    this.transactions.push({ symbol, price, shares, type: 'purchase' });
                     this.portfolio[symbol] = symbol in this.portfolio ? this.portfolio[symbol] + shares : shares;
-                    this.cash = Number(this.cash - purchase_amount);
+                    this.cash = Number(this.cash - amount);
                     db.collection('Users').updateOne({_id: this.email}, { 
                         $set: {
                             transactions: this.transactions,
@@ -71,7 +71,33 @@ module.exports = {
                             cash: this.cash
                         }
                     }, { upsert: true }).then(res => resolve(res))
-                    .catch(err => { console.log(err); reject('Transaction could not be completed')});
+                    .catch(err => { console.error(err); reject('Transaction could not be completed')});
+                });
+            }
+
+            SellStock(symbol, price, shares) {
+                return new Promise((resolve, reject) => {
+                    const amount = Number(price) * Number(shares);
+                    if (!(symbol in this.portfolio)) {
+                        reject('You do not own stocks with this symbol');
+                        return;
+                    }
+                    if (shares > this.portfolio[symbol]) {
+                        reject('You do not own enough stocks to sell');
+                        return;
+                    }
+                    this.transactions.push({ symbol, price, shares, type: 'sell' });
+                    this.portfolio[symbol] -= shares
+                    if (this.portfolio[symbol] === 0) delete this.portfolio[symbol];
+                    this.cash += amount;
+                    db.collection('Users').updateOne({_id: this.email}, {
+                        $set: {
+                            transactions: this.transactions,
+                            portfolio: this.portfolio,
+                            cash: this.cash
+                        }
+                    }, { upsert: true }).then(res => resolve(res))
+                    .catch(err => { console.error(err); reject('Transaction could not completed')});
                 });
             }
 
