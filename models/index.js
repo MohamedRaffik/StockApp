@@ -10,7 +10,7 @@ const CreateConnection = () => {
                 reject('Unable to connect to database');
                 return;
             }
-            const database = db.db('local');
+            const database = db.db();
             database.createCollection('Users', (err, res) => {
                 if (err) {
                     reject('Users collection could not be created');
