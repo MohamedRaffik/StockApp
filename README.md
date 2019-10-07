@@ -1,32 +1,19 @@
-Checklist
-- [x] Remove axios
-- [x] Set up google firestore models
-- [x] Set up register Login page
-- [x] Create login / register routes and controllers
-- [x] Dont show purchase from when not logged in
-- [x] User model will need to pass to certain controllers
-- [x] Set up transaction endpoint
-- [x] Set up portfolio endpoint
-- [x] Create transaction page
-- [x] Create portfolio page
-- [ ] Add timestamps to transactions
-- [x] Rewrite user class methods as promises without async await
-- [x] Rewrite passport functions as ^^^^
-- [x] Set up logout endpoint
-- [ ] Change server side events to polling
-- [ ] Deploy to GCP
+## Hosted on Heroku at https://personalstockapp.herokuapp.com/
+
+# Running Local
+
+## Requirements
+- MongoDB
+- Enviroment variables
+    - Set `MONGODB_URI` in your `.env` to the url of your local mongodb database 
+    - Set `API_KEY` to the key received when creating an account at [IEX Cloud](https://iexcloud.io/)
+
+## Commands
+- After cloning the repo run `npm install` within the folder
+- To run the the client and server in development mode run `npm run dev`
+- To run just the client issue the command `npm run client`
+- To run the server in 'production mode' issue the command `npm run build && npm run start` 
+
+To do
 - [ ] Test endpoints
 - [ ] Define prop types for components
-
-Notes
-- Must use polling, GCP does not support streaming responses
-- Due to using server side events to have realtime updates to stock prices, it uses only references of the user object when displaying portfolio information. To avoid dealing with stale data there are two options 1) Cause the webpage to refresh, restarting the event source 2) Retrieve the user instance from the database using the id in the req object. The latter choice is much more expensive as it causes a slow down on waiting to retrieve information from the database and it does so every few seconds, while refreshing the page is done only when a transactions is completed.
-
-User Stories completed
-
-- [x] 1
-- [x] 2
-- [x] 3
-- [x] 4
-- [x] 5
-- [ ] 6
