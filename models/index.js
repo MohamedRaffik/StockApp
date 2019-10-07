@@ -2,7 +2,7 @@ const { MongoClient } = require('mongodb');
 
 const CreateConnection = () => {
     return new Promise((resolve, reject) => {
-        MongoClient.connect(process.env.MONGO_URL, { 
+        MongoClient.connect(process.env.MONGODB_URI, { 
             useNewUrlParser: true,
             useUnifiedTopology: true,
         }, (err, db) => {
