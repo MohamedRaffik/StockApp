@@ -1,15 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import './Transactions.scss';
 
 const Transactions = (props) => {
     const [UserTransactions, setUserTransactions] = useState([]);
-    const [GettingTransactionsData, SetGettingTransactionData] = useState(false);
+    const [GettingTransactionsData, SetGettingTransactionData] = useState(true);
 
     useEffect(() => {
         fetch('/api/transactions')
             .then(response => response.json())
-            .then(json => setUserTransactions(json.transactions))
+            .then(json => {
+                setUserTransactions(json.transactions);
+                SetGettingTransactionData(false);
+            })
             .catch(err => console.error(err));
     }, []);
 
@@ -20,7 +22,7 @@ const Transactions = (props) => {
                 <div className="info">
                     <p>{val.symbol}</p>
                     <p>{val.shares} shares @ $ 
-                        <span style={{display: 'inline', color}}>{val.price}</span>
+                        <span style={{display: 'inline', color}}>{Number(val.price).toFixed(2)}</span>
                     </p>
                 </div>
             </div>
