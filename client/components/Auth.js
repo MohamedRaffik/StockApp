@@ -8,7 +8,8 @@ const Auth = (props) => {
 
     const { AuthIn } = props;
 
-    const AuthInAction = (register) => {
+    const AuthInAction = (register, event) => {
+        if(event) event.preventDefault();
         setErrorMsg('');
         if (register) AuthIn(RegisterInfo, true, setErrorMsg);
         else { AuthIn(LoginInfo, false, setErrorMsg); }
@@ -20,7 +21,7 @@ const Auth = (props) => {
         <div>
             <p className="error">{ErrorMsg ? `Error: ${ErrorMsg}` : ''}</p>
             <div className="auth">
-                <div className="register">
+                <form className="register" onSubmit={(e) => AuthInAction(true, e)}>
                     <h3>Register</h3>
                     <div>
                         <p>Name</p>
@@ -35,9 +36,9 @@ const Auth = (props) => {
                         <input type="password" onChange={(e) => setRegisterInfo({...RegisterInfo, password: e.target.value})} value={RegisterInfo.password} />
                     </div>
                     <button onClick={() => AuthInAction(true)}>Register</button>
-                </div>
+                </form>
                 <div className="vert-line"></div>
-                <div className="login">
+                <form className="login" onSubmit={(e) => AuthInAction(false, e)}>
                     <h3>Login</h3>
                     <div>
                         <p>Email</p>
@@ -47,8 +48,8 @@ const Auth = (props) => {
                         <p>Password</p>
                         <input type="password" onChange={(e) => setLoginInfo({...LoginInfo, password: e.target.value})} value={LoginInfo.password} />
                     </div>
-                    <button onClick={() => AuthInAction(false)}>Login</button>
-                </div>
+                    <button onClick={(e) => AuthInAction(false)}>Login</button>
+                </form>
             </div>
         </div>
     );

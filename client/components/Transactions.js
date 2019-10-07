@@ -3,7 +3,8 @@ import { Link } from 'react-router-dom';
 import './Transactions.scss';
 
 const Transactions = (props) => {
-    const[UserTransactions, setUserTransactions] = useState([]);
+    const [UserTransactions, setUserTransactions] = useState([]);
+    const [GettingTransactionsData, SetGettingTransactionData] = useState(false);
 
     useEffect(() => {
         fetch('/api/transactions')
@@ -27,10 +28,13 @@ const Transactions = (props) => {
     })
 
     return ( 
-        <div className="transactions">
-            <h2>Transactions</h2>
-            { transactions }
-        </div>
+        GettingTransactionsData ?
+            <div style={{margin: '2em', textAlign: 'center'}}>Retrieving Transaction Data ...</div>
+            :
+            <div className="transactions">
+                <h2>Transactions</h2>
+                { transactions }
+            </div>
     );
 };
 

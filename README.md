@@ -15,5 +15,6 @@
 - To run the server in 'production mode' issue the command `npm run build && npm run start` 
 
 To do
+- [x] Add placeholders for login check, getting portfolio data, transactions data
 - [ ] Test endpoints
 - [ ] Define prop types for components

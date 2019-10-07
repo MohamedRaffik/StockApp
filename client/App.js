@@ -17,6 +17,7 @@ const UnAuthorizedComponent = (props) => {
 
 const App = () => {
     const [Username, setUsername] = useState('');
+    const [CheckingAuth, setCheckingAuth] = useState(true);
 
     const AuthIn = (info, register, callback) => {
         fetch(`/api/auth/${register ? 'register': 'login'}`, {
@@ -26,6 +27,7 @@ const App = () => {
         }).then(response => response.json())
         .then(json => {
             if (json.error) {
+                console.error(json);
                 callback(json.error);
                 return;
             }
@@ -38,9 +40,11 @@ const App = () => {
     };
 
     const Logout = () => {
+        setCheckingAuth(true);
         fetch('/api/auth/logout')
             .then(response => {
                 setUsername('');
+                setCheckingAuth(false)
                 window.location = '/';
             }).catch(err => console.error(err));
     }
@@ -50,7 +54,11 @@ const App = () => {
             .then(response => response.json())
             .then(json => {
                 if (json.username) setUsername(json.username);
-            }).catch(err => console.error(err));
+                setCheckingAuth(false);
+            }).catch(err => {
+                setCheckingAuth(false);
+                console.error(err);
+            });
     }, []);
 
     const AuthProps = {
@@ -72,11 +80,15 @@ const App = () => {
                     null
                 }
             </nav>
-            <Switch>
-                <Route path="/" exact render={() => Username ? <Redirect to="/portfolio" /> : <Auth {...AuthProps} />} />
-                <Route path="/portfolio" exact render={() => Username ? <Portfolio /> : <UnAuthorizedComponent name={'Portfolio'} />} />
-                <Route path="/transactions" exact render={() => Username ? <Transactions /> : <UnAuthorizedComponent name={'Transactions'} />} />
-            </Switch>   
+            { CheckingAuth ?
+                <div style={{textAlign: 'center'}}>Checking if logged in ...</div>
+                :
+                <Switch>
+                    <Route path="/" exact render={() => Username ? <Redirect to="/portfolio" /> : <Auth {...AuthProps} />} />
+                    <Route path="/portfolio" exact render={() => Username ? <Portfolio /> : <UnAuthorizedComponent name={'Portfolio'} />} />
+                    <Route path="/transactions" exact render={() => Username ? <Transactions /> : <UnAuthorizedComponent name={'Transactions'} />} />
+                </Switch>   
+            }
         </div>
     );
 };

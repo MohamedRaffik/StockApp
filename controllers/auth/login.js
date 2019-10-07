@@ -6,7 +6,7 @@ const setup = (context) => {
 
     const checkIfLoggedIn = (req, res, next) => {
         if (req.user) {
-            const { email, name, cash } = req.user;
+            const { email, name } = req.user;
             return res.json({username: email, name});
         }
         next();

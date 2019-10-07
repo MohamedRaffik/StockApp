@@ -9,6 +9,7 @@ const Portfolio = (props) => {
     const [CurrentCash, setCurrentCash] = useState(0);
     const [StockInfo, setStockInfo] = useState([])
     const [ErrorMsg, SetErrorMsg] = useState('');
+    const [GettingProfileData, SetGettingProfileData] = useState(true);
 
     const Purchase = () => {
         fetch('/api/transactions/purchase', { 
@@ -42,6 +43,7 @@ const Portfolio = (props) => {
             const { stocks, cash } = JSON.parse(e.data);
             setStockInfo(stocks);
             setCurrentCash(Number(cash).toFixed(2));
+            SetGettingProfileData(false);
         });
         evtSource.addEventListener('error', e => SetErrorMsg('Connection to receive Portfolio data was terminated'));
     }, []);
@@ -71,25 +73,28 @@ const Portfolio = (props) => {
     };
     
     return (
-        <div>
-            <h2 style={{margin: '2em', left: '30%'}}>Portfolio ($ {Number(PortfolioValue).toFixed(2)})</h2>
-            <div className="stock">
-                <div>
-                    { StockInfo.length !== 0 ? StockInfo.map(val => StockCard(val)) : <p>Purchase stocks to add to your portfolio</p> }
-                </div>
-                <div style={{margin: '10px', width: '2px', height: '300px', backgroundColor: 'black'}}></div>
-                <div className="purchase-form">
-                    <h2>Total Cash: ${CurrentCash}</h2>
-                    <p style={{color: 'red'}}>{ErrorMsg}</p>
-                    <input placeholder="Ticker" onChange={(e) => setTickerName(e.target.value)} value={TickerName}/>
-                    <input placeholder="Quantity" onChange={(e) => setQuantity(Number(e.target.value))} value={Quantity} />
-                    <div className="button">
-                        <button onClick={Purchase}>Purchase</button>
-                        <button onClick={Sell}>Sell</button>
+        GettingProfileData ?
+            <div style={{margin: '2em', textAlign: 'center'}}>Retrieving Profile data ...</div>
+            :
+            <div>
+                <h2 style={{margin: '2em', left: '30%'}}>Portfolio ($ {Number(PortfolioValue).toFixed(2)})</h2>
+                <div className="stock">
+                    <div>
+                        { StockInfo.length !== 0 ? StockInfo.map(val => StockCard(val)) : <p>Purchase stocks to add to your portfolio</p> }
+                    </div>
+                    <div style={{margin: '10px', width: '2px', height: '300px', backgroundColor: 'black'}}></div>
+                    <div className="purchase-form">
+                        <h2>Total Cash: ${CurrentCash}</h2>
+                        <p style={{color: 'red'}}>{ErrorMsg}</p>
+                        <input placeholder="Ticker" onChange={(e) => setTickerName(e.target.value)} value={TickerName}/>
+                        <input placeholder="Quantity" onChange={(e) => setQuantity(Number(e.target.value))} value={Quantity} />
+                        <div className="button">
+                            <button onClick={Purchase}>Purchase</button>
+                            <button onClick={Sell}>Sell</button>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
     );
 };
 
