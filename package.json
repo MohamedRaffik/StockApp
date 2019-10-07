@@ -16,7 +16,6 @@
     "node": "10.x"
   },
   "dependencies": {
-    "@google-cloud/firestore": "^2.3.0",
     "bcrypt": "^3.0.6",
     "dotenv": "^8.1.0",
     "express": "^4.17.1",
