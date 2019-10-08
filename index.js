@@ -7,6 +7,7 @@ const session = require('express-session');
 const uuid = require('uuid/v4');
 const { CreateConnection } = require('./models');
 const utils = require('./controllers/utils');
+const MongoStore = require('connect-mongo')(session);
 
 CreateConnection().then(db => {
     const User = require('./models').User(db);
@@ -23,6 +24,10 @@ CreateConnection().then(db => {
         'secret': uuid(),
         'resave': false,
         'saveUninitialized': false,
+        store: new MongoStore({ 
+            url: process.env.MONGODB_URI,
+            ttl: 14 * 24 * 60 * 60 
+        })
     }));
     app.use(passport.initialize());
     app.use(passport.session());
