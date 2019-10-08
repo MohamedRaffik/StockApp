@@ -1,19 +1,10 @@
-const fetch = require('node-fetch');
-const API_KEY = process.env.API_KEY;
-
-const { isAuthenticated, getStockInfo } = require('../utils');
-
 const setup = (context) => {
 
+    const { utils } = context;
+    const { isAuthenticated, getStockInfo } = utils;
+
     const sendStockInfo = (req, res, next) => {
-
-        /**
-         * Retrieves stock information for a particular stock name
-         * @param {String} stock_symbol 
-         * @returns {Promise} Stock Information or error
-         */
         
-
         const setEventStreamHeader = (req, res) => {
             res.status(200).set({
                 'Connection': 'keep-alive',

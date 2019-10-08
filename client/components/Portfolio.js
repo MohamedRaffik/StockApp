@@ -55,7 +55,7 @@ const Portfolio = (props) => {
 
     const StockCard = (stock) => {
         let color = stock.current_price > stock.open_price ? 'green' : 'red';
-        if (stock.current_price === stock.open_price) color = 'grey'; 
+        if (stock.current_price === stock.open_price || stock.open_price === null) color = 'grey'; 
 
         return (
             <div className="stock-card" key={stock.symbol}>

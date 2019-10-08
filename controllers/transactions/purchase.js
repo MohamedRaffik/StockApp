@@ -1,7 +1,8 @@
-const { isAuthenticated, getStockInfo } = require('../utils');
-
 const setup = (context) => {
-    const { User } = context;
+    
+    const { User, utils } = context;
+    const { isAuthenticated, getStockInfo } = utils;
+
 
     const checkValidBody = (req, res, next) => {
         if (!('symbol' in req.body)) return res.json({error: 'Stock Symbol not indicated'});

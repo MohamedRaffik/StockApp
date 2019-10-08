@@ -6,6 +6,7 @@ const api = require('./routes');
 const session = require('express-session');
 const uuid = require('uuid/v4');
 const { CreateConnection } = require('./models');
+const utils = require('./controllers/utils');
 
 CreateConnection().then(db => {
     const User = require('./models').User(db);
@@ -13,7 +14,8 @@ CreateConnection().then(db => {
 
     const context = {
         User,
-        passport
+        passport,
+        utils
     };
     
     app.use(express.json());

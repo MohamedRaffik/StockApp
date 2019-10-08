@@ -1,6 +1,8 @@
-const { isAuthenticated } = require('../utils');
-
 const setup = (context) => {
+
+    const { utils } = context;
+    const { isAuthenticated } = utils;
+
     const Logout = (req, res, next) => {
         req.logout();
         res.send('');

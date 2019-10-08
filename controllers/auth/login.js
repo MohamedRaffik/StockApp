@@ -1,8 +1,7 @@
-const { validateEmail } = require('../utils');
-
 const setup = (context) => {
 
-    const { passport } = context;
+    const { passport, utils } = context;
+    const { validateEmail } = utils;
 
     const checkIfLoggedIn = (req, res, next) => {
         if (req.user) {

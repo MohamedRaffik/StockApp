@@ -1,6 +1,7 @@
-const { isAuthenticated } = require('../utils');
-
 const setup = (context) => {
+
+    const { utils } = context;
+    const { isAuthenticated } = utils;
 
     const listTransactions = (req, res) => {
         const { transactions } = req.user;
