@@ -28,7 +28,7 @@ const setup = (context) => {
                                     symbol: val['symbol'],
                                     shares: req.user.portfolio[val['symbol']],
                                     company_name: val['companyName'],
-                                    open_price: Number(val['open']), 
+                                    open_price: val['open'] === null ? null : Number(val['open']), 
                                     current_price: Number(val['latestPrice']),
                                 }
                             });

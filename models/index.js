@@ -2,10 +2,7 @@ const { MongoClient } = require('mongodb');
 
 const CreateConnection = () => {
     return new Promise((resolve, reject) => {
-        MongoClient.connect(process.env.MONGODB_URI, { 
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
-        }, (err, db) => {
+        MongoClient.connect(process.env.MONGODB_URI, {}, (err, db) => {
             if (err) {
                 reject('Unable to connect to database');
                 return;

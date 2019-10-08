@@ -4,7 +4,6 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 const api = require('./routes');
 const session = require('express-session');
-const uuid = require('uuid/v4');
 const { CreateConnection } = require('./models');
 const utils = require('./controllers/utils');
 const MongoStore = require('connect-mongo')(session);

@@ -22,7 +22,8 @@ const Portfolio = (props) => {
         }).then(response => response.json())
         .then(json => {
             if (json.error) return setErrorMsg(json.error);
-            document.location.reload();
+            setErrorMsg('');
+            GetProfileData();
         }).catch(err => setErrorMsg('Transaction Failed'))
     };
 
@@ -35,19 +36,25 @@ const Portfolio = (props) => {
         }).then(response => response.json())
         .then(json => {
             if (json.error) return setErrorMsg(json.error);
-            document.location.reload();
+            setErrorMsg('');
+            GetProfileData();
         }).catch(err => setErrorMsg('Transaction Failed'));
     };
 
-    useEffect(() => { 
-        const evtSource = new EventSource('/api/portfolio');
-        evtSource.addEventListener('message', e => {
+    const GetProfileData = () => {
+        if (document.evtSource) document.evtSource.close();
+        document.evtSource = new EventSource('/api/portfolio');
+        document.evtSource.addEventListener('message', e => {
             const { stocks, cash } = JSON.parse(e.data);
             setUserInfo({...UserInfo, StockInfo: stocks, CurrentCash: Number(cash).toFixed(2) });
             setGettingProfileData(false);
         });
-        evtSource.addEventListener('error', e => setErrorMsg('Connection to receive Portfolio data was terminated, reload page'));
-        return () => evtSource.close();
+        document.evtSource.addEventListener('error', e => setErrorMsg('Connection to receive Portfolio data was terminated, reload page'));
+    };
+
+    useEffect(() => { 
+        GetProfileData();
+        return () => document.evtSource.close();
     }, []);
 
     useEffect(() => {
