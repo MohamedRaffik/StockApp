@@ -18,21 +18,27 @@ const setup = (context) => {
     }
 
     const Login = (req, res, next) => passport.authenticate('local-login', (err, user, info) => {
-        if (err) return res.json({error: err})
-        req.login(user, err => {
-            if (err) {
-                console.log(err);
-                return res.json({error: err});
-            }
-            const { email, name } = req.user;
-            return res.json({username: email, name});        
-        });
+        if (err) req.body.error = err;
+        else {
+            req.login(user, err => {
+                if (err) req.body.error = err;
+            });
+        }
+        next()
     })(req, res, next);
+
+    const sendResponse = (req, res, next) => {
+        const { error } = req.body;
+        if (error) return res.status(500).json({error});
+        const { email, name } = req.user;
+        return res.status(200).json({username: email, name});
+    };
 
     return [
         checkIfLoggedIn,
         validateRequest,
         Login,
+        sendResponse,
     ];
 }
 

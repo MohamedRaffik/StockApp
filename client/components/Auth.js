@@ -35,7 +35,7 @@ const Auth = (props) => {
                         <p>Password</p>
                         <input type="password" onChange={(e) => setRegisterInfo({...RegisterInfo, password: e.target.value})} value={RegisterInfo.password} />
                     </div>
-                    <button onClick={() => AuthInAction(true)}>Register</button>
+                    <button>Register</button>
                 </form>
                 <div className="vert-line"></div>
                 <form className="login" onSubmit={(e) => AuthInAction(false, e)}>
@@ -48,7 +48,7 @@ const Auth = (props) => {
                         <p>Password</p>
                         <input type="password" onChange={(e) => setLoginInfo({...LoginInfo, password: e.target.value})} value={LoginInfo.password} />
                     </div>
-                    <button onClick={(e) => AuthInAction(false)}>Login</button>
+                    <button>Login</button>
                 </form>
             </div>
         </div>

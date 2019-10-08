@@ -9,6 +9,10 @@ class Collection {
                 reject('_id field not specified');
                 return;
             }
+            if (object._id in this.data) {
+                reject('Account exists with this email');
+                return;
+            }
             this.data[object._id] = object;
             resolve(this.data[object._id]);
         });
@@ -63,23 +67,26 @@ class Database {
 }
 
 class Request {
-    constructor(object) {
-        for (let key in object) this[key] = object[key];
+    login(user, callback) {
+        this.user = user;
+        callback();
     }
 }
 
 class Response {
     status(code) {
-        this.status = code;
+        this.statusCode = code;
         return this;
     }
 
     json(object) {
-        this.json = object;
+        this.jsonData = object;
+        return this;
     }
 
     send(string) {
         this.data = string;
+        return this;
     }
 }
 
@@ -104,10 +111,13 @@ const getStockInfo = (stock_symbol) => {
 
 utils.getStockInfo = getStockInfo;
 
+const User = require('../models').User(db);
+const passport = require('../passport')(User);
+
 module.exports = {
     context: {
-        User: require('../models').User(db),
-        passport: require('../passport')(this.User),
+        User,
+        passport,
         utils: require('../controllers/utils'),
         clearDB: () => db.clear()
     },
