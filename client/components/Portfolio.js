@@ -79,16 +79,16 @@ const Portfolio = (props) => {
             <div style={{margin: '2em', textAlign: 'center'}}>Retrieving Profile data ...</div>
             :
             <div>
-                <h2 style={{margin: '2em', left: '30%'}}>Portfolio ($ {Number(PortfolioValue).toFixed(2)})</h2>
+                <h2 style={{margin: '2em', left: '30%'}}>Portfolio ($ {Number(UserInfo.PortfolioValue).toFixed(2)})</h2>
                 <div className="stock">
                     <div>
-                        { StockInfo.length !== 0 ? StockInfo.map(val => StockCard(val)) : <p>Purchase stocks to add to your portfolio</p> }
+                        { UserInfo.StockInfo.length !== 0 ? UserInfo.StockInfo.map(val => StockCard(val)) : <p>Purchase stocks to add to your portfolio</p> }
                     </div>
                     <div style={{margin: '10px', width: '2px', height: '300px', backgroundColor: 'black'}}></div>
                     <div className="purchase-form">
-                        <h2>Total Cash: ${CurrentCash}</h2>
+                        <h2>Total Cash: ${UserInfo.CurrentCash}</h2>
                         <p style={{color: 'red'}}>{ErrorMsg}</p>
-                        <input placeholder="Ticker" onChange={(e) => setTickerName(e.target.value)} value={TickerName}/>
+                        <input placeholder="Ticker Name" onChange={(e) => setTickerName(e.target.value)} value={TickerName}/>
                         <input placeholder="Quantity" onChange={(e) => setQuantity(Number(e.target.value))} value={Quantity} />
                         <div className="button">
                             <button onClick={Purchase}>Purchase</button>
