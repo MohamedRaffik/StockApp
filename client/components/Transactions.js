@@ -15,10 +15,10 @@ const Transactions = (props) => {
             .catch(err => console.error(err));
     }, []);
 
-    const transactions = UserTransactions.map(val => {
+    const transactions = UserTransactions.map((val, i) => {
         const color = val.type === 'purchase' ? 'red' : 'green';
         return (
-            <div className="transaction-card" key={val.symbol}>
+            <div className="transaction-card" key={val.symbol + i}>
                 <div className="info">
                     <p>{val.symbol}</p>
                     <p>{val.shares} shares @ $ 

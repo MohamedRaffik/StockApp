@@ -5,9 +5,11 @@ const Portfolio = (props) => {
 
     const [TickerName, setTickerName] = useState('');
     const [Quantity, setQuantity] = useState('');
-    const [PortfolioValue, setPortfolioValue] = useState(0);
-    const [CurrentCash, setCurrentCash] = useState(0);
-    const [StockInfo, setStockInfo] = useState([])
+    const [UserInfo, setUserInfo] = useState({ 
+        PortfolioValue: 0, 
+        CurrentCash: 0, 
+        StockInfo: [] 
+    });
     const [ErrorMsg, setErrorMsg] = useState('');
     const [GettingProfileData, setGettingProfileData] = useState(true);
 
@@ -20,7 +22,7 @@ const Portfolio = (props) => {
         }).then(response => response.json())
         .then(json => {
             if (json.error) return setErrorMsg(json.error);
-            setErrorMsg('');
+            document.location.reload();
         }).catch(err => setErrorMsg('Transaction Failed'))
     };
 
@@ -33,31 +35,25 @@ const Portfolio = (props) => {
         }).then(response => response.json())
         .then(json => {
             if (json.error) return setErrorMsg(json.error);
-            setErrorMsg('');
+            document.location.reload();
         }).catch(err => setErrorMsg('Transaction Failed'));
     };
 
-    const getPortfolioData = () => {
-        fetch('/api/portfolio')
-        .then(response => response.json())
-        .then(json => {
-            const { stocks, cash } = json;
-            setStockInfo(stocks);
-            setCurrentCash(Number(cash).toFixed(2));
-            setGettingProfileData(false);
-            setTimeout(getPortfolioData, 5000);
-        }).catch(err => {
-            setErrorMsg('Retrieving Portfolio data failed, reload page')
+    useEffect(() => { 
+        const evtSource = new EventSource('/api/portfolio');
+        evtSource.addEventListener('message', e => {
+            const { stocks, cash } = JSON.parse(e.data);
+            setUserInfo({...UserInfo, StockInfo: stocks, CurrentCash: Number(cash).toFixed(2) });
             setGettingProfileData(false);
         });
-    }
-
-    useEffect(() => { getPortfolioData(); }, []);
+        evtSource.addEventListener('error', e => setErrorMsg('Connection to receive Portfolio data was terminated, reload page'));
+        return () => evtSource.close();
+    }, []);
 
     useEffect(() => {
-        const value = StockInfo.reduce((prev, curr, i) => prev + ( curr.current_price * curr.shares ), 0);
-        setPortfolioValue(Number(value).toFixed(2));
-    }, [StockInfo]);
+        const value = UserInfo.StockInfo.reduce((prev, curr) => prev + ( curr.current_price * curr.shares ), 0);
+        setUserInfo({...UserInfo, PortfolioValue: Number(value).toFixed(2) });
+    }, [UserInfo.StockInfo]);
 
     const StockCard = (stock) => {
         let color = stock.current_price > stock.open_price ? 'green' : 'red';
