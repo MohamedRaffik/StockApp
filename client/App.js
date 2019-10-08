@@ -74,7 +74,7 @@ const App = () => {
                 }
             </nav>
             { CheckingAuth ?
-                <div style={{textAlign: 'center'}}>Checking if logged in ...</div>
+                <div style={{textAlign: 'center', margin: '2em'}}>Checking if logged in ...</div>
                 :
                 <Switch>
                     <Route path="/" exact render={() => Username ? <Redirect to="/portfolio" /> : <Auth {...AuthProps} />} />
