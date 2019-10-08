@@ -12,41 +12,47 @@ const Portfolio = (props) => {
     const [GettingProfileData, SetGettingProfileData] = useState(true);
 
     const Purchase = () => {
+        SetErrorMsg('Transaction Pending');
         fetch('/api/transactions/purchase', { 
             method: 'POST',
             body: JSON.stringify({ symbol: TickerName, shares: Quantity }),
             headers: { 'Content-Type': 'application/json' }
         }).then(response => response.json())
         .then(json => {
-            console.log(json);
             if (json.error) return SetErrorMsg(json.error);
-            document.location.reload();
+            SetErrorMsg('');
         }).catch(err => SetErrorMsg('Transaction Failed'))
     };
 
     const Sell = () => {
+        SetErrorMsg('Transaction Pending');
         fetch('/api/transactions/sell', {
             method: 'POST',
             body: JSON.stringify({ symbol: TickerName, shares: Quantity }),
             headers: { 'Content-Type': 'application/json' }
         }).then(response => response.json())
         .then(json => {
-            console.log(json);
             if (json.error) return SetErrorMsg(json.error);
-            document.location.reload();
+            SetErrorMsg('');
         }).catch(err => SetErrorMsg('Transaction Failed'));
     };
 
-    useEffect(() => {
-        const evtSource = new EventSource('/api/portfolio');
-        evtSource.addEventListener('message', e => {
-            const { stocks, cash } = JSON.parse(e.data);
+    const getPortfolioData = () => {
+        fetch('/api/portfolio')
+        .then(response => response.json())
+        .then(json => {
+            const { stocks, cash } = json;
             setStockInfo(stocks);
             setCurrentCash(Number(cash).toFixed(2));
             SetGettingProfileData(false);
+            setTimeout(getPortfolioData, 5000);
+        }).catch(err => {
+            console.error(err);
+            SetGettingProfileData(false);
         });
-        evtSource.addEventListener('error', e => SetErrorMsg('Connection to receive Portfolio data was terminated'));
-    }, []);
+    }
+
+    useEffect(() => { getPortfolioData(); }, []);
 
     useEffect(() => {
         const value = StockInfo.reduce((prev, curr, i) => prev + ( curr.current_price * curr.shares ), 0);
