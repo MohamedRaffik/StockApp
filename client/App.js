@@ -27,16 +27,12 @@ const App = () => {
         }).then(response => response.json())
         .then(json => {
             if (json.error) {
-                console.error(json);
                 callback(json.error);
                 return;
             }
             setUsername(json.username);
         })
-        .catch(err => {
-            console.error(err);
-            callback('Unable to login');
-        });
+        .catch(err => callback('Unable to login'));
     };
 
     const Logout = () => {
@@ -55,10 +51,7 @@ const App = () => {
             .then(json => {
                 if (json.username) setUsername(json.username);
                 setCheckingAuth(false);
-            }).catch(err => {
-                setCheckingAuth(false);
-                console.error(err);
-            });
+            }).catch(err => setCheckingAuth(false));
     }, []);
 
     const AuthProps = {

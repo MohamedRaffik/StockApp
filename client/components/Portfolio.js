@@ -8,33 +8,33 @@ const Portfolio = (props) => {
     const [PortfolioValue, setPortfolioValue] = useState(0);
     const [CurrentCash, setCurrentCash] = useState(0);
     const [StockInfo, setStockInfo] = useState([])
-    const [ErrorMsg, SetErrorMsg] = useState('');
-    const [GettingProfileData, SetGettingProfileData] = useState(true);
+    const [ErrorMsg, setErrorMsg] = useState('');
+    const [GettingProfileData, setGettingProfileData] = useState(true);
 
     const Purchase = () => {
-        SetErrorMsg('Transaction Pending');
+        setErrorMsg('Transaction Pending');
         fetch('/api/transactions/purchase', { 
             method: 'POST',
             body: JSON.stringify({ symbol: TickerName, shares: Quantity }),
             headers: { 'Content-Type': 'application/json' }
         }).then(response => response.json())
         .then(json => {
-            if (json.error) return SetErrorMsg(json.error);
-            SetErrorMsg('');
-        }).catch(err => SetErrorMsg('Transaction Failed'))
+            if (json.error) return setErrorMsg(json.error);
+            setErrorMsg('');
+        }).catch(err => setErrorMsg('Transaction Failed'))
     };
 
     const Sell = () => {
-        SetErrorMsg('Transaction Pending');
+        setErrorMsg('Transaction Pending');
         fetch('/api/transactions/sell', {
             method: 'POST',
             body: JSON.stringify({ symbol: TickerName, shares: Quantity }),
             headers: { 'Content-Type': 'application/json' }
         }).then(response => response.json())
         .then(json => {
-            if (json.error) return SetErrorMsg(json.error);
-            SetErrorMsg('');
-        }).catch(err => SetErrorMsg('Transaction Failed'));
+            if (json.error) return setErrorMsg(json.error);
+            setErrorMsg('');
+        }).catch(err => setErrorMsg('Transaction Failed'));
     };
 
     const getPortfolioData = () => {
@@ -44,11 +44,11 @@ const Portfolio = (props) => {
             const { stocks, cash } = json;
             setStockInfo(stocks);
             setCurrentCash(Number(cash).toFixed(2));
-            SetGettingProfileData(false);
+            setGettingProfileData(false);
             setTimeout(getPortfolioData, 5000);
         }).catch(err => {
-            console.error(err);
-            SetGettingProfileData(false);
+            setErrorMsg('Retrieving Portfolio data failed, reload page')
+            setGettingProfileData(false);
         });
     }
 
