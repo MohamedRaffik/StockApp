@@ -28,9 +28,9 @@ const setup = (context) => {
                                     symbol: val['symbol'],
                                     shares: req.user.portfolio[val['symbol']],
                                     company_name: val['companyName'],
-                                    open_price: val['open'] === null ? null : Number(val['open']), 
+                                    open_price: val['previousClose'], 
                                     current_price: Number(val['latestPrice']),
-                                }
+                                };
                             });
                             const data = { stocks: StockInfo, cash: req.user.cash };
                             res.write(`data: ${JSON.stringify(data)}\n\n`);
