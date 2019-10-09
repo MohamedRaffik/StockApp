@@ -5,45 +5,27 @@ class Collection {
 
     insertOne(object) {
         return new Promise((resolve, reject) => {
-            if (!('_id' in object)) {
-                reject('_id field not specified');
-                return;
-            }
-            if (object._id in this.data) {
-                reject('Account exists with this email');
-                return;
-            }
+            if (!('_id' in object)) return reject('_id field not specified');
+            if (object._id in this.data) return reject('Account exists with this email');
             this.data[object._id] = object;
-            resolve(this.data[object._id]);
+            return resolve(this.data[object._id]);
         });
     }
 
     updateOne(selector, object) {
         return new Promise((resolve, reject) => {
-            if (!('_id' in selector)) {
-                reject('_id field not specified');
-                return;
-            }
-            if (!(selector._id in this.data)) {
-                reject(`Document with _id '${selector._id}' is not in this collection`);
-                return;
-            }
+            if (!('_id' in selector)) return reject('_id field not specified');
+            if (!(selector._id in this.data)) return reject(`Document with _id '${selector._id}' is not in this collection`);
             for (let key in object.$set) this.data[selector._id][key] = object.$set[key];
-            resolve(this.data[selector._id]);
+            return resolve(this.data[selector._id]);
         });
     }
 
     findOne(selector) {
         return new Promise((resolve, reject) => {
-            if (!('_id' in selector)) {
-                reject('_id field not specified');
-                return;
-            }
-            if (!(selector._id in this.data)) {
-                reject(`Document with _id '${selector._id}' is not in this collection`);
-                return;
-            }
-            resolve(this.data[selector._id]);
+            if (!('_id' in selector)) return reject('_id field not specified');
+            if (!(selector._id in this.data)) return reject(`Document with _id '${selector._id}' is not in this collection`);
+            return resolve(this.data[selector._id]);
         });
     }
 } 
@@ -100,7 +82,7 @@ const utils = require('../controllers/utils');
 const getStockInfo = (stock_symbol) => {
     return new Promise((resolve, reject) => {
         const isApple = stock_symbol === 'AAPL';
-        resolve({
+        return resolve({
             symbol: isApple ? 'AAPL' : 'GOOG',
             companyName: isApple ? 'Apple, Inc.' : 'Alphabet, Inc.',
             open: isApple ? '222.98' : '1343.00',

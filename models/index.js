@@ -3,18 +3,12 @@ const { MongoClient } = require('mongodb');
 const CreateConnection = () => {
     return new Promise((resolve, reject) => {
         MongoClient.connect(process.env.MONGODB_URI, {}, (err, db) => {
-            if (err) {
-                reject('Unable to connect to database');
-                return;
-            }
+            if (err) return reject('Unable to connect to database');
             const database = db.db();
             database.createCollection('Users', (err, res) => {
-                if (err) {
-                    reject('Users collection could not be created');
-                    return;
-                }
+                if (err) return reject('Users collection could not be created');
                 console.log('Users collection created');
-                resolve(database);
+                return resolve(database);
             });
         });
     });
@@ -54,10 +48,7 @@ module.exports = {
             PurchaseStock(symbol, price, shares) {
                 return new Promise((resolve, reject) => {
                     const amount = Number(price) * Number(shares);
-                    if (this.cash < amount) {
-                        reject('Purchase failed, not enough money');
-                        return;
-                    }
+                    if (this.cash < amount) return reject('Purchase failed, not enough money');
                     this.transactions.push({ symbol, price, shares, type: 'purchase' });
                     this.portfolio[symbol] = symbol in this.portfolio ? this.portfolio[symbol] + shares : shares;
                     this.cash = Number(this.cash - amount);
@@ -68,21 +59,15 @@ module.exports = {
                             cash: this.cash
                         }
                     }, { upsert: true }).then(res => resolve(res))
-                    .catch(err => { console.error(err); reject('Transaction could not be completed')});
+                    .catch(err => reject('Transaction could not be completed'));
                 });
             }
 
             SellStock(symbol, price, shares) {
                 return new Promise((resolve, reject) => {
                     const amount = Number(price) * Number(shares);
-                    if (!(symbol in this.portfolio)) {
-                        reject('You do not own stocks with this symbol');
-                        return;
-                    }
-                    if (shares > this.portfolio[symbol]) {
-                        reject('You do not own enough stocks to sell');
-                        return;
-                    }
+                    if (!(symbol in this.portfolio)) return reject('You do not own stocks with this symbol');
+                    if (shares > this.portfolio[symbol]) return reject('You do not own enough stocks to sell');
                     this.transactions.push({ symbol, price, shares, type: 'sell' });
                     this.portfolio[symbol] -= shares
                     if (this.portfolio[symbol] === 0) delete this.portfolio[symbol];
@@ -94,7 +79,7 @@ module.exports = {
                             cash: this.cash
                         }
                     }, { upsert: true }).then(res => resolve(res))
-                    .catch(err => { console.error(err); reject('Transaction could not completed')});
+                    .catch(err => reject('Transaction could not completed'));
                 });
             }
 
@@ -116,12 +101,8 @@ module.exports = {
                 return new Promise((resolve, reject) => {
                     db.collection('Users').findOne({_id: email})
                         .then(user => {
-                            if (user) {
-                                resolve(new User({...user, email: user._id}));
-                                return;
-                            }
-                            reject('Account not found')
-                            return;
+                            if (user) return resolve(new User({...user, email: user._id }));
+                            return reject('Account not found')
                         }).catch(err => reject(err));
                 });
             }

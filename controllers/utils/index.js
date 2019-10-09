@@ -13,13 +13,10 @@ module.exports = {
     getStockInfo: (stock_symbol) => new Promise((resolve, reject) => {
         fetch(`https://cloud.iexapis.com/stable/stock/${stock_symbol}/quote?token=${API_KEY}`)
             .then(response => {
-                if (response.status === 404) reject('Invalid Symbol'); 
+                if (response.status === 404) return reject('Invalid Symbol'); 
                 return response.json();
             })
             .then(json => resolve(json))
-            .catch((err) => {
-                console.error(err);
-                reject('Failed to get Stock Info')
-            });
+            .catch(err => reject('Failed to get Stock Info'));
     })
 };

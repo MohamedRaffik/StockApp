@@ -17,10 +17,7 @@ const setup = (context) => {
                 req.body.price = Number(info['latestPrice']);
                 next();
             })
-            .catch(err => {
-                console.error(err);
-                return res.json({error: err});
-            })
+            .catch(err => res.json({ error: err }))
     };
 
     const SellTransaction = (req, res, next) => {
@@ -28,10 +25,7 @@ const setup = (context) => {
         const { symbol, shares, price } = req.body;
         user.SellStock(symbol, price, shares)
             .then(success => res.json({success: true}))
-            .catch(err => {
-                console.error(err);
-                return res.json({error: err})
-            });
+            .catch(err => res.json({ error: err }));
     }; 
 
     return [

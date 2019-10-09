@@ -21,8 +21,8 @@ const Transactions = (props) => {
             <div className="transaction-card" key={val.symbol + i}>
                 <div className="info">
                     <p>{val.symbol}</p>
-                    <p>{val.shares} shares @ $ 
-                        <span style={{display: 'inline', color}}>{Number(val.price).toFixed(2)}</span>
+                    <p>{val.shares} shares @ 
+                        <span style={{display: 'inline', color}}> $ {Number(val.price).toFixed(2)}</span>
                     </p>
                 </div>
             </div>

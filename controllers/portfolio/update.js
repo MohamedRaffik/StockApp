@@ -36,7 +36,7 @@ const setup = (context) => {
                             res.write(`data: ${JSON.stringify(data)}\n\n`);
                             if (!close.bool) setTimeout(getInfo, 5000);
                         })
-                        .catch(reason => { console.error(reason); });
+                        .catch(reason => {});
                     };
             getInfo();
         };

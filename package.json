@@ -4,9 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "concurrently \"nodemon -r dotenv/config index.js\" \"npm run client\"",
-    "client": "webpack-dev-server --hot --open --mode development",
-    "start": "node -r dotenv/config index.js",
+    "dev": "concurrently \"npm run dev:server\" \"npm run dev:client\"",
+    "dev:server": "nodemon -r dotenv/config index.js",
+    "dev:client": "webpack-dev-server --hot --open --mode development",
+    "start": "node index.js",
     "build": "webpack --mode production",
     "test": "mocha --recursive 'tests'"
   },
