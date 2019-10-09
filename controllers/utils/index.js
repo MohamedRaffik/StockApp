@@ -18,5 +18,14 @@ module.exports = {
             })
             .then(json => resolve(json))
             .catch(err => reject('Failed to get Stock Info'));
+    }),
+    getMultipleStockInfo: (stock_symbols) => new Promise((resolve, reject) => {
+        fetch(`https://cloud.iexapis.com/stable/stock/market/batch?symbols=${stock_symbols.join(',')}&types=quote&token=${API_KEY}`)
+            .then(response => {
+                if (response.status === 404) return reject('Invalid Symbol');
+                return response.json();
+            })
+            .then(json => resolve(json))
+            .catch(err => { console.log(err); reject('Failed to get Stock Info') });
     })
 };

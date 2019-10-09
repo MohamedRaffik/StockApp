@@ -2,7 +2,7 @@
 const setup = (context) => {
 
     const { utils, User } = context;
-    const { isAuthenticated, getStockInfo } = utils;
+    const { isAuthenticated, getMultipleStockInfo } = utils;
 
     const setEventStreamHeader = (req, res, next) => {
         res.status(200).set({
@@ -21,22 +21,23 @@ const setup = (context) => {
                 const stocks = Object.keys(req.user.portfolio);
                 const getInfo = () => {
                     if (close.bool) return res.end();
-                    Promise.all(stocks.map((val) => getStockInfo(val)))
+                    getMultipleStockInfo(stocks)
                         .then(values => {
-                            const StockInfo = values.map(val => {
+                            const StockInfo = Object.keys(values).map(symbol => {
+                                const symbol_info = values[symbol]['quote'];
                                 return {
-                                    symbol: val['symbol'],
-                                    shares: req.user.portfolio[val['symbol']],
-                                    company_name: val['companyName'],
-                                    open_price: val['previousClose'], 
-                                    current_price: Number(val['latestPrice']),
+                                    symbol,
+                                    shares: Number(req.user.portfolio[symbol]),
+                                    company_name: symbol_info['companyName'],
+                                    open_price: Number(symbol_info['previousClose']), 
+                                    current_price: Number(symbol_info['latestPrice']),
                                 };
                             });
                             const data = { stocks: StockInfo, cash: req.user.cash };
                             res.write(`data: ${JSON.stringify(data)}\n\n`);
                             if (!close.bool) setTimeout(getInfo, 5000);
                         })
-                        .catch(reason => {});
+                        .catch(reason => { console.log(reason); });
                     };
             getInfo();
         };
