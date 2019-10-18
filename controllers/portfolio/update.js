@@ -18,9 +18,13 @@ const setup = (context) => {
         const close = { bool: false };
         
         const sendResponse = (req, res) => {
-                const stocks = Object.keys(req.user.portfolio);
-                const getInfo = () => {
-                    if (close.bool) return res.end();
+            const stocks = Object.keys(req.user.portfolio);
+            const getInfo = () => {
+                if (close.bool) return res.end();
+                if (stocks.length === 0) {
+                    res.write(`data: ${JSON.stringify({ stocks: [], cash: req.user.cash })}\n\n`);
+                    if (!close.bool) setTimeout(getInfo, 5000);
+                } else {
                     getMultipleStockInfo(stocks)
                         .then(values => {
                             const StockInfo = Object.keys(values).map(symbol => {
@@ -38,7 +42,8 @@ const setup = (context) => {
                             if (!close.bool) setTimeout(getInfo, 5000);
                         })
                         .catch(reason => { console.log(reason); });
-                    };
+                };
+            };
             getInfo();
         };
 
