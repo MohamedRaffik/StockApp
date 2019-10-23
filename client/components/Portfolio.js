@@ -17,7 +17,7 @@ const Portfolio = (props) => {
         setErrorMsg('Transaction Pending');
         fetch('/api/transactions/purchase', { 
             method: 'POST',
-            body: JSON.stringify({ symbol: TickerName, shares: Quantity }),
+            body: JSON.stringify({ symbol: TickerName.toUpperCase(), shares: Quantity }),
             headers: { 'Content-Type': 'application/json' }
         }).then(response => response.json())
         .then(json => {
@@ -31,7 +31,7 @@ const Portfolio = (props) => {
         setErrorMsg('Transaction Pending');
         fetch('/api/transactions/sell', {
             method: 'POST',
-            body: JSON.stringify({ symbol: TickerName, shares: Quantity }),
+            body: JSON.stringify({ symbol: TickerName.toUpperCase(), shares: Quantity }),
             headers: { 'Content-Type': 'application/json' }
         }).then(response => response.json())
         .then(json => {
