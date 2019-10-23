@@ -7,6 +7,7 @@ const setup = (context) => {
     const checkValidBody = (req, res, next) => {
         if (!('symbol' in req.body)) return res.json({error: 'Stock Symbol not indicated'});
         if (!('shares' in req.body)) return res.json({error: 'Number of shares not indicated'});
+        req.body.symbol = req.body.symbol.toUpperCase();
         next();
     }
 
@@ -24,7 +25,7 @@ const setup = (context) => {
         const user = new User(req.user);
         const { symbol, shares, price } = req.body;
         user.PurchaseStock(symbol, price, shares)
-            .then(success => res.json({success: true}))
+            .then(success => res.json({ success: true }))
             .catch(err => res.json({ error: err }));
     };
 
