@@ -5,7 +5,7 @@ const setup = (context) => {
 
     const Logout = (req, res, next) => {
         req.logout();
-        res.send('');
+        res.status(200).end();
     }
 
     return [

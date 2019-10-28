@@ -2,6 +2,17 @@ const fetch = require('node-fetch');
 const API_KEY = process.env.API_KEY;
 
 module.exports = {
+    validateFields: (object, fields) => {
+        for (let i in fields) {
+            const field = fields[i];
+            if (!(field in object)) {
+                return `"${field}" value not specified`;
+            } else if (object[field] === null || object[field] === undefined) {
+                return `"${field}" value is not valid`;
+            }
+        }
+        return false;
+    },
     validateEmail : (email) => {
         var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         return re.test(String(email).toLowerCase());

@@ -5,7 +5,7 @@ const setup = (context) => {
 
     const listTransactions = (req, res) => {
         const { transactions } = req.user;
-        return res.json({transactions});
+        return res.json({ transactions });
     }
 
     return [

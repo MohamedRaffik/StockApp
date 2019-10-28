@@ -1,99 +1,121 @@
-const { context, Request, Response } = require('../../mock_context');
+const sinon = require('sinon');
 const expect = require('chai').expect;
+const { Response, context } = require('../../mock');
 
-describe('test register controller', () => {
-    
-    const functions = require('../../../controllers/auth/register')(context);
-    const [validateBody, validateRequest, Register, sendResponse] = functions;
+describe('test register middleware functions', () => {
 
-    describe('test validateBody function', () => {
+    const [validateRequest, Register, sendResponse] = require('../../../controllers/auth/register')(context);
 
-        const req = new Request();
-        const res = new Response();
+    const req = {
+        body: {
+            email: 'someemail@gmail.com',
+            name: 'John Doe',
+            password: 'password'
+        },
+        login: (user, callback) => {
+            req.user = user;
+            callback(false);
+        }
+    };
+    const res = new Response();
+    const next = sinon.spy();
 
-        it('should return a 400 response missing the email field and return an error json', (done) => {
-            req.body = {};
-            validateBody(req, res);
-            expect(res.statusCode).to.equal(400);
-            expect(res.jsonData).to.have.property('error');
+    sinon.spy(res, 'status');
+    sinon.spy(res, 'json'); 
+
+    beforeEach(done => {
+        res.status.resetHistory();
+        res.json.resetHistory();
+        next.resetHistory();
+        done();
+    });
+
+    describe('test validateRequest middleware', () => {
+
+        beforeEach(done => {
+            res.status.resetHistory();
+            res.json.resetHistory();
+            next.resetHistory();
             done();
         });
 
-        it('should return a 400 response missing the password field and return an error json', (done) => {
-            req.body.email = 'someemail@gmail.com'
-            validateBody(req, res);
-            expect(res.statusCode).to.equal(400);
-            expect(res.jsonData).to.have.property('error');
-            done();
-        });
+        it('should fail missing any one field of email, password, or name or have invalid values', done => {
+            req.body.email = null;
+            validateRequest(req, res, next);
+            expect(res.json.calledOnce).to.equal(true);
+            expect(res.json.getCall(0).args[0]).to.deep.equal({ error: '"email" value is not valid' });
 
-        it('should return a 400 response missing the name field and return an error json', (done) => {
-            req.body.name = 'John Doe';
-            validateBody(req, res);
-            expect(res.statusCode).to.equal(400);
-            expect(res.jsonData).to.have.property('error');
-            done();
-        });
+            req.body.email = 'someemail@gmail.com';
+            delete req.body.password;
+            validateRequest(req, res, next);
+            expect(res.json.calledTwice).to.equal(true);
+            expect(res.json.getCall(1).args[0]).to.deep.equal({ error: '"password" value not specified' });
 
-        it('should invoke the next function with all valid fields', (done) => {
             req.body.password = 'password';
-            validateBody(req, res, () => {
-                done();
-            });
+            req.body.name = undefined;
+            validateRequest(req, res, next);
+            expect(res.json.calledThrice).to.equal(true);
+            expect(res.json.getCall(2).args[0]).to.deep.equal({ error: '"name" value is not valid' });
+
+            expect(res.status.alwaysCalledWith(400));
+            expect(next.callCount).to.equal(0);
+            done();
         });
-    });
 
-    describe('test validateRequest function', () => {
+        it('should return response of 400 if the email is not or password is too short', done => {
+            req.body.email = 'notanemail.com';
+            req.body.name = 'John Doe';
+            validateRequest(req, res, next);
+            expect(res.json.calledOnce).to.equal(true);
+            expect(res.json.getCall(0).args[0]).to.deep.equal({ error: 'Invalid Email' });
 
-        const req = new Request();
-        const res = new Response();
+            req.body.email = 'someemail@gmail.com';
+            req.body.password = 'shortp';
+            validateRequest(req, res, next);
+            expect(res.json.calledTwice).to.equal(true);
+            expect(res.json.getCall(1).args[0]).to.deep.equal({ error: 'Password length is too short, must be more than 8 characters' });
+            
+            expect(res.status.alwaysCalledWith(400)).to.equal(true);
+            expect(next.notCalled).to.equal(true);
+            done();
+        });
 
-        it('should return a 400 response with password length error', (done) => {
-            req.body = {
-                email: 'someemail@google.com',
-                password: '1234567'
-            };
-            validateRequest(req, res);
-            expect(res.statusCode).to.equal(400);
-            expect(res.jsonData).to.have.property('error');
+        it('should continue execution with valid parameters', done => {
+            req.body.password = 'password';
+            validateRequest(req, res, next);
+            expect(next.calledOnce).to.equal(true);
+            expect(res.status.notCalled).to.equal(true);
+            expect(res.json.notCalled).to.equal(true);
             done();
         });
     });
 
-    describe('test Register function', () => {
-
-        let req = new Request();
-        let res = new Response();
-
-        beforeEach((done) => {
-            req = new Request();
-            req.body = { 
-                name:  'John Doe',
-                email: 'someemail@google.com',
-                password: 'password'
-            };
-            res = new Response();
+    describe('test sendResponse middleware', () => {
+        
+        beforeEach(done => {
+            res.status.resetHistory();
+            res.json.resetHistory();
+            next.resetHistory();
             done();
         });
 
-        it('should create an account in the database', (done) => {
-            Register(req, res, () => {
-                expect(req.body).not.have.property('error');
-                expect(req).to.have.property('user');
-                expect(req.user.email).to.equal(req.body.email);
-                done();
-            });
+        it('should return a response with status 500 if there is an error logging the user in', done => {
+            req.body.error = 'I am an error';
+            sendResponse(req, res, next);
+            expect(res.status.calledOnceWith(500)).to.equal(true);
+            expect(res.json.calledOnceWith({ error: 'I am an error' })).to.equal(true);
+            expect(next.notCalled).to.equal(true);
+            done();
         });
 
-        it('should return an error response if the account with that email exists', (done) => {
-            Register(req, res, () => {
-                expect(req.body).to.have.property('error');
-                done();
-            });
+        it('should return a response with status 200 if the user was logged in', done => {
+            delete req.body.error;
+            req.user = req.body;
+            sendResponse(req, res, next);
+            expect(res.status.calledOnceWith(200)).to.equal(true);
+            expect(res.json.calledOnceWith({ username: 'someemail@gmail.com', name: 'John Doe' })).to.equal(true);
+            expect(next.notCalled).to.equal(true);
+            done();
         });
-    });
-
-    describe('test sendResponse function', () => {
-
     });
 });
